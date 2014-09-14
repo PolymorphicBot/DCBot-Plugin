@@ -4,7 +4,19 @@ description: DirectCode Plugin for PolymorphicBot
 dependencies:
   irc: '>=1.4.5 <1.4.9'
   polymorphic_bot:
-    git: git://github.com/PolymorphicBot/PolymorphicBot.git
-    version: 1.2.0
+    path: "/home/kaendfinger/Polymorphic/Bot/"
   github:
     git: git://github.com/DirectMyFile/github.dart.git
+  http_server: ">=0.9.3 <0.10.0"
+  route: ">=0.4.6 <0.5.0"
+plugin:
+  commands:
+    help:
+      description: "Provides Help Information"
+    commands:
+      description: "Lists Commands for Each Plugin"
+    "dart-version":
+      description: "Provides Dart Version Information"
+      usage: "dart-version [channel]"
+    "reload":
+      description: "Reloads Plugins"
