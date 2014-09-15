@@ -9,6 +9,7 @@ dependencies:
     git: git://github.com/DirectMyFile/github.dart.git
   http_server: ">=0.9.3 <0.10.0"
   route: ">=0.4.6 <0.5.0"
+  http: ">=0.11.0"
 plugin:
   commands:
     help:
