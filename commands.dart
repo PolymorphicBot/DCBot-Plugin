@@ -10,7 +10,7 @@ class CommandEvent {
   final String channel;
   final List<String> args;
 
-  void reply(String message, {bool prefix: true, String prefixContent: "DirectCode"}) {
+  void reply(String message, {bool prefix: true, String prefixContent: "DCBot"}) {
     bot.message(network, channel, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
@@ -18,7 +18,7 @@ class CommandEvent {
     bot.permission((it) => handle(), network, channel, user, permission);
   }
 
-  void replyNotice(String message, {bool prefix: true, String prefixContent: "DirectCode"}) {
+  void replyNotice(String message, {bool prefix: true, String prefixContent: "DCBot"}) {
     bot.notice(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
@@ -29,16 +29,16 @@ void handleCommand(CommandEvent event) {
   if (event.channel.toLowerCase() == "#directcode") {
     switch (event.command) {
       case "github":
-        event.reply("GitHub Organization: https://github.com/DirectMyFile");
+        event.reply("GitHub Organization: https://github.com/DirectMyFile", prefixContent: "DirectCode");
         break;
       case "board":
-        event.reply("All Ops are Board Members");
+        event.reply("All Ops are Board Members", prefixContent: "DirectCode");
         break;
       case "members":
-        event.reply("All Voices are Members");
+        event.reply("All Voices are Members", prefixContent: "DirectCode");
         break;
       case "join-directcode":
-        event.reply("To become a member, contact a board member.");
+        event.reply("To become a member, contact a board member.", prefixContent: "DirectCode");
         break;
     }
   }
@@ -64,7 +64,7 @@ void handleCommand(CommandEvent event) {
       event.reply(friendlyTime(new DateTime.now()), prefixContent: "Time");
       break;
     case "now":
-      event.reply("Now is " + friendlyDateTime(new DateTime.now()), prefixContent: "DCBot");
+      event.reply("Now is " + friendlyDateTime(new DateTime.now()));
       break;
     case "yesterday":
       event.reply("Yesterday was " + friendlyDate(new DateTime.now().subtract(new Duration(days: 1))), prefixContent: "DCBot");
@@ -81,7 +81,7 @@ void handleCommand(CommandEvent event) {
       try {
         days = int.parse(event.args[0]);
       } catch (e) {
-        event.reply("> ${event.args[0]} is not a valid number.");
+        event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
       }
       event.reply("${days} day${days != 1 ? "s" : ""} from now will be ${friendlyDate(new DateTime.now().add(new Duration(days: days)))}", prefixContent: "DCBot");
@@ -95,7 +95,7 @@ void handleCommand(CommandEvent event) {
       try {
         days = int.parse(event.args[0]);
       } catch (e) {
-        event.reply("> ${event.args[0]} is not a valid number.");
+        event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
       }
       event.reply("${days} day${days != 1 ? "s" : ""} ago was ${friendlyDate(new DateTime.now().subtract(new Duration(days: days)))}", prefixContent: "DCBot");
@@ -261,6 +261,34 @@ void handleCommand(CommandEvent event) {
           }
         });
       }
+      break;
+    case "addtxtcmd":
+      event.require("txtcmds.add", () {
+        if (event.args.length < 2) {
+          event.reply("Usage: addtxtcmd <command> <text>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          var text = event.args.sublist(1).join(" ");
+          textCommandStorage.set(cmd, text);
+          event.reply("Command Added", prefixContent: "Text Commands");
+        }
+      });
+      break;
+    case "addchannelcmd":
+      event.require("txtcmds.channel.add", () {
+        if (event.args.length < 2) {
+          event.reply("Usage: addchannelcmd <command> <text>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          var text = event.args.sublist(1).join(" ");
+          textCommandStorage.set(event.channel + " " + cmd, text);
+          event.reply("Command Added", prefixContent: "Text Commands");
+        }
+      });
+      break;
+    case "about-bot":
+      event.replyNotice("I am written in 100% Dart. I use isolates to separate functionality into plugins. This allows me to reload plugins without restarting the full bot.");
+      event.replyNotice("You can find most of my functionality here: https://github.com/PolymorphicBot/");
       break;
   }
 }

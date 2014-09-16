@@ -23,6 +23,7 @@ part "server.dart";
 part "buffer.dart";
 part "regex.dart";
 part "commands.dart";
+part "text_commands.dart";
 
 APIConnector bot;
 
@@ -41,7 +42,9 @@ void main(List<String> args, port) {
   
   storage.load();
   
-  print("[DirectCode] Loading Plugin");
+  initTextCommands();
+  
+  print("[DCBot] Loading Plugin");
 
   bot.handleEvent((event) {
     switch (event['event']) {
@@ -76,7 +79,9 @@ void main(List<String> args, port) {
         var command = data['command'] as String;
         var args = data['args'] as List<String>;
         var message = data['message'] as String;
-        handleCommand(new CommandEvent(network, command, message, user, target, args));
+        var cmdEvent = new CommandEvent(network, command, message, user, target, args);
+        handleCommand(cmdEvent);
+        handleTextCommands(cmdEvent);
         break;
       case "shutdown":
         server.close(force: true);
