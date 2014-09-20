@@ -169,6 +169,14 @@ void handleCommand(CustomCommandEvent event) {
         });
       });
       break;
+    case "reload":
+      event.require("plugins.reload", () {
+        event.reply("Reloading Plugins is currently broken. The bot will be restarted instead.", prefixContent: "DCBot");
+        bot.send("stop-bot", {
+          "network": event.network
+        });
+      });
+      break;
     case "year":
       event.reply("The Year is ${new DateTime.now().year}", prefixContent: "DCBot");
       break;
