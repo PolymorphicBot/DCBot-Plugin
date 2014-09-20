@@ -2,7 +2,7 @@ part of dcbot.plugin;
 
 const String BASE_DARTDOC = "http://www.dartdocs.org/documentation/";
 
-class CommandEvent {
+class CustomCommandEvent {
   final String network;
   final String command;
   final String message;
@@ -22,10 +22,10 @@ class CommandEvent {
     bot.notice(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
-  CommandEvent(this.network, this.command, this.message, this.user, this.channel, this.args);
+  CustomCommandEvent(this.network, this.command, this.message, this.user, this.channel, this.args);
 }
 
-void handleCommand(CommandEvent event) {
+void handleCommand(CustomCommandEvent event) {
   if (event.channel.toLowerCase() == "#directcode") {
     switch (event.command) {
       case "github":
@@ -150,14 +150,6 @@ void handleCommand(CommandEvent event) {
     case "month":
       var m = new DateTime.now().month;
       event.reply("The Month is ${monthName(m)} (the ${m}${friendlyDaySuffix(m)} month)", prefixContent: "DCBot");
-      break;
-    case "reload":
-      event.require("plugins.reload", () {
-        event.reply("Reloading Plugins", prefixContent: "DCBot");
-        bot.send("reload-plugins", {
-          "network": event.network
-        });
-      });
       break;
     case "day":
       event.reply("The Day is ${dayName(new DateTime.now().weekday)}", prefixContent: "DCBot");
@@ -289,6 +281,9 @@ void handleCommand(CommandEvent event) {
     case "about-bot":
       event.replyNotice("I am written in 100% Dart. I use isolates to separate functionality into plugins. This allows me to reload plugins without restarting the full bot.");
       event.replyNotice("You can find most of my functionality here: https://github.com/PolymorphicBot/");
+      break;
+    case "whatis":
+      APIDocs.handleWhatIsCmd(event);
       break;
   }
 }

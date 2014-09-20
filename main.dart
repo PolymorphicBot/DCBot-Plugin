@@ -24,8 +24,10 @@ part "buffer.dart";
 part "regex.dart";
 part "commands.dart";
 part "text_commands.dart";
+part "apidocs.dart";
+part "messages.dart";
 
-APIConnector bot;
+BotConnector bot;
 
 Storage storage;
 
@@ -36,13 +38,16 @@ String fancyPrefix(String name) {
 }
 
 void main(List<String> args, port) {
-  bot = new APIConnector(port);
+  bot = new BotConnector(port);
 
-  storage = new Storage(new File("storage.json"));
+  
+  storage = bot.createStorage("DCBot", "storage");
   
   storage.load();
   
   initTextCommands();
+  
+  APIDocs.init();
   
   print("[DCBot] Loading Plugin");
 
@@ -70,6 +75,7 @@ void main(List<String> args, port) {
           chanUserTotal++;
           storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
         }
+        handleMessage(event);
         break;
       case "command":
         var data = event;
@@ -79,12 +85,13 @@ void main(List<String> args, port) {
         var command = data['command'] as String;
         var args = data['args'] as List<String>;
         var message = data['message'] as String;
-        var cmdEvent = new CommandEvent(network, command, message, user, target, args);
+        var cmdEvent = new CustomCommandEvent(network, command, message, user, target, args);
         handleCommand(cmdEvent);
         handleTextCommands(cmdEvent);
         break;
       case "shutdown":
         server.close(force: true);
+        httpClient.close();
         break;
     }
   });

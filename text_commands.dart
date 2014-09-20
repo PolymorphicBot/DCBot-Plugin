@@ -3,11 +3,11 @@ part of dcbot.plugin;
 Storage textCommandStorage;
 
 void initTextCommands() {
-  textCommandStorage = new Storage(new File("text_commands.json"));
+  textCommandStorage = bot.createStorage("DCBot", "text_commands");
   textCommandStorage.load();
 }
 
-void handleTextCommands(CommandEvent event) {
+void handleTextCommands(CustomCommandEvent event) {
   String value;
   
   value = textCommandStorage.get("${event.channel} ${event.command}", null);
