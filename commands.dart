@@ -171,8 +171,8 @@ void handleCommand(CustomCommandEvent event) {
       break;
     case "reload":
       event.require("plugins.reload", () {
-        event.reply("Reloading Plugins is currently broken. The bot will be restarted instead.", prefixContent: "DCBot");
-        bot.send("stop-bot", {
+        event.reply("Reloading Plugins", prefixContent: "Plugin Manager");
+        bot.send("reload-plugins", {
           "network": event.network
         });
       });
