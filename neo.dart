@@ -27,6 +27,9 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
     case "buildSuccessful":
       onNeoBuildSuccess(build);
       break;
+    default:
+      bot.message("EsperNet", "kaendfinger", "NEW TEAMCITY BUILD STATE: ${build['notifyType']}");
+      break;
   }
 }
 
