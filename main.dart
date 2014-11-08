@@ -46,7 +46,6 @@ void main(List<String> args, port) {
   storage.load();
   
   initTextCommands();
-  setupNeo();
   
   APIDocs.init();
   
@@ -98,6 +97,8 @@ void main(List<String> args, port) {
   setupServer().then((_) {
     print("[DCBot] Server Started");
     setupSlack();
+    setupNeo();
+    GitLab.initialize();
     print("[DCBot] Slack Integration Setup");
   });
 }
