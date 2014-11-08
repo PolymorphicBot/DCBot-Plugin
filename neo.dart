@@ -89,6 +89,17 @@ void onNeoBuildSuccess(Map<String, dynamic> build) {
   }
 }
 
+Future<String> guessDeviceName(String input) {
+  return deviceNames().then((names) {
+    for (var name in names) {
+      if (input.trim().toLowerCase() == name.trim().toLowerCase()) {
+        return name;
+      }
+    }
+    return null;
+  });
+}
+
 void handleNeoCommand(CustomCommandEvent event) {
   var _args = new List<String>.from(event.args);
 
@@ -105,10 +116,10 @@ void handleNeoCommand(CustomCommandEvent event) {
         event.reply("Usage: neo subscribe <device>", prefixContent: "neo");
         return;
       }
-      var device = args.join(" ");
+      var input = args.join(" ");
 
-      deviceNames().then((names) {
-        if (!names.contains(device)) {
+      guessDeviceName(input).then((device) {
+        if (device == null) {
           event.reply("Invalid Device. To get a list of devices, please use '\$neo devices'.", prefixContent: "neo");
           return;
         }
@@ -129,10 +140,10 @@ void handleNeoCommand(CustomCommandEvent event) {
         event.reply("Usage: neo unsubscribe <device>", prefixContent: "neo");
         return;
       }
-      var device = args.join(" ");
+      var input = args.join(" ");
 
-      deviceNames().then((names) {
-        if (!names.contains(device)) {
+      guessDeviceName(input).then((device) {
+        if (device == null) {
           event.reply("Invalid Device. To get a list of devices, please use '\$neo devices'.", prefixContent: "neo");
           return;
         }
@@ -169,6 +180,7 @@ void handleNeoCommand(CustomCommandEvent event) {
         event.reply("Usage: neo devices", prefixContent: "neo");
         return;
       }
+
       deviceNames().then((devices) {
         event.reply("Devices: ${devices.join(", ")}", prefixContent: "neo");
       });
