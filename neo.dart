@@ -76,7 +76,7 @@ void handleNeoCommand(CustomCommandEvent event) {
       break;
     case "subscriptions":
       var subs = storage.json.keys.where((key) {
-        return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains();
+        return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains(event.network + ":" + event.user);
       }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " "))
         .map((key) => key.split(" ").map((it) => it[0].toUpperCase() + it.substring(1)).join(" "))
         .toList();
