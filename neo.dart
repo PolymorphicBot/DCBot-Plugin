@@ -23,6 +23,10 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
     case "buildStarted":
       onNeoBuildStarted(build);
       break;
+    case "buildFixed":
+    case "buildSuccessful":
+      onNeoBuildSuccess(build);
+      break;
   }
 }
 
@@ -66,6 +70,19 @@ void onNeoBuildStarted(Map<String, dynamic> build) {
     var network = split[0];
     var user = split[1];
     bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Started for the ${displayName}.");
+  }
+}
+
+void onNeoBuildSuccess(Map<String, dynamic> build) {
+  String displayName = build['buildFullName'].replaceAll("neo :: ", "");
+  String device = displayName.replaceAll(" ", "_").toLowerCase();
+  List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
+
+  for (var subscriber in subscribers) {
+    var split = subscriber.split(":");
+    var network = split[0];
+    var user = split[1];
+    bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Finished Successfully for the ${displayName}.");
   }
 }
 
