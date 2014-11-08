@@ -55,15 +55,36 @@ void handleNeoCommand(CustomCommandEvent event) {
       var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
       List<String> subscribers = storage.get(key, []);
       if (subscribers.contains("${event.network}:${event.user}")) {
-        event.reply("You are already subscribed to build notifications for the ${device}.");
+        event.reply("You are already subscribed to build notifications for the ${device}.", prefixContent: "neo");
         return;
       }
-
       subscribers.add("${event.network}:${event.user}");
-
       storage.set(key, subscribers);
-
-      event.reply("You have been subscribed to build notifications for the ${device}.");
+      event.reply("You have been subscribed to build notifications for the ${device}.", prefixContent: "neo");
+      break;
+    case "unsubscribe":
+      var device = args.join(" ");
+      var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
+      List<String> subscribers = storage.get(key, []);
+      if (!subscribers.contains("${event.network}:${event.user}")) {
+        event.reply("You are not subscribed to build notifications for the ${device}.", prefixContent: "neo");
+        return;
+      }
+      subscribers.remove("${event.network}:${event.user}");
+      storage.set(key, subscribers);
+      event.reply("You are no longer subscribed to build notifications for the ${device}.", prefixContent: "neo");
+      break;
+    case "subscriptions":
+      var subs = storage.json.keys.where((key) {
+        return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains();
+      }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " "))
+        .map((key) => key.split(" ").map((it) => it[0].toUpperCase() + it.substring(1)).join(" "))
+        .toList();
+      if (subs.isEmpty) {
+        event.reply("You are not subscribed to any devices.", prefixContent: "neo");
+      } else {
+        event.reply("Subscriptions: ${subs.join(", ")}", prefixContent: "neo");
+      }
       break;
     default:
       event.reply("No Such Command '${cmd}'", prefixContent: "neo");
