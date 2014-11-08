@@ -2,3 +2,5 @@ pubspec.lock
 build
 packages
 .pub
+.idea
+*.iml
