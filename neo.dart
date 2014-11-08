@@ -26,6 +26,36 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
   }
 }
 
+Future<Map<String, dynamic>> fetchNeoDescriptor() {
+  return http.get("http://git.directcode.org/neo/neo/raw/master/default.json").then((response) {
+    return JSON.decode(response.body);
+  });
+}
+
+class NeoDevice {
+  String name;
+  String codename;
+  String manufacturer;
+}
+
+Future<List<NeoDevice>> devices() {
+  return fetchNeoDescriptor().then((deviceInformation) {
+    var devices = [];
+    for (var dev in deviceInformation) {
+      var device = new NeoDevice();
+      device.name = dev['name'];
+      device.codename = dev['codename'];
+      device.manufacturer = dev['manufacturer'];
+    }
+  });
+}
+
+Future<List<String>> deviceNames() {
+  return fetchNeoDescriptor().then((descriptor) {
+    return descriptor['devices'].map((device) => device['name']).toList();
+  });
+}
+
 void onNeoBuildStarted(Map<String, dynamic> build) {
   String displayName = build['buildFullName'].replaceAll("neo :: ", "");
   String device = displayName.replaceAll(" ", "_").toLowerCase();
@@ -52,27 +82,43 @@ void handleNeoCommand(CustomCommandEvent event) {
   switch (cmd) {
     case "subscribe":
       var device = args.join(" ");
-      var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
-      List<String> subscribers = storage.get(key, []);
-      if (subscribers.contains("${event.network}:${event.user}")) {
-        event.reply("You are already subscribed to build notifications for the ${device}.", prefixContent: "neo");
-        return;
-      }
-      subscribers.add("${event.network}:${event.user}");
-      storage.set(key, subscribers);
-      event.reply("You have been subscribed to build notifications for the ${device}.", prefixContent: "neo");
+
+      deviceNames().then((names) {
+        if (!names.contains(device)) {
+          event.reply("Invalid Device. To get a list of devices, please use '\$neo devices'.", prefixContent: "neo");
+          return;
+        }
+
+        var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
+        List<String> subscribers = storage.get(key, []);
+        if (subscribers.contains("${event.network}:${event.user}")) {
+          event.reply("You are already subscribed to build notifications for the ${device}.", prefixContent: "neo");
+          return;
+        }
+        subscribers.add("${event.network}:${event.user}");
+        storage.set(key, subscribers);
+        event.reply("You have been subscribed to build notifications for the ${device}.", prefixContent: "neo");
+      });
       break;
     case "unsubscribe":
       var device = args.join(" ");
-      var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
-      List<String> subscribers = storage.get(key, []);
-      if (!subscribers.contains("${event.network}:${event.user}")) {
-        event.reply("You are not subscribed to build notifications for the ${device}.", prefixContent: "neo");
-        return;
-      }
-      subscribers.remove("${event.network}:${event.user}");
-      storage.set(key, subscribers);
-      event.reply("You are no longer subscribed to build notifications for the ${device}.", prefixContent: "neo");
+
+      deviceNames().then((names) {
+        if (!names.contains(device)) {
+          event.reply("Invalid Device. To get a list of devices, please use '\$neo devices'.", prefixContent: "neo");
+          return;
+        }
+
+        var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
+        List<String> subscribers = storage.get(key, []);
+        if (!subscribers.contains("${event.network}:${event.user}")) {
+          event.reply("You are not subscribed to build notifications for the ${device}.", prefixContent: "neo");
+          return;
+        }
+        subscribers.remove("${event.network}:${event.user}");
+        storage.set(key, subscribers);
+        event.reply("You are no longer subscribed to build notifications for the ${device}.", prefixContent: "neo");
+      });
       break;
     case "subscriptions":
       var subs = storage.json.keys.where((key) {
@@ -85,6 +131,11 @@ void handleNeoCommand(CustomCommandEvent event) {
       } else {
         event.reply("Subscriptions: ${subs.join(", ")}", prefixContent: "neo");
       }
+      break;
+    case "devices":
+      deviceNames().then((devices) {
+        event.reply("Devices: ${devices.join(", ")}", prefixContent: "neo");
+      });
       break;
     default:
       event.reply("No Such Command '${cmd}'", prefixContent: "neo");
