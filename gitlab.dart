@@ -34,7 +34,7 @@ class GitLab {
       channel = "#commits";
     }
 
-    bot.message("EsperNet", channel, "[${user}] ${user} pushed to branch ${ref}:");
+    bot.message("EsperNet", channel, "[${repositoryName}] ${user} pushed to branch ${ref}:");
 
     for (var commit in commits) {
       bot.message("EsperNet", channel, "${commit['author']['name']}: ${commit['message']}");
