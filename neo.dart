@@ -52,13 +52,16 @@ void handleNeoCommand(CustomCommandEvent event) {
   switch (cmd) {
     case "subscribe":
       var device = args.join(" ");
-      List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
+      var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
+      List<String> subscribers = storage.get(key, []);
       if (subscribers.contains("${event.network}:${event.user}")) {
         event.reply("You are already subscribed to build notifications for the ${device}.");
         return;
       }
 
       subscribers.add("${event.network}:${event.user}");
+
+      storage.set(key, subscribers);
 
       event.reply("You have been subscribed to build notifications for the ${device}.");
       break;
