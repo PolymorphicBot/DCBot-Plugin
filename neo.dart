@@ -42,7 +42,7 @@ class NeoDevice {
   String manufacturer;
 }
 
-Future<List<NeoDevice>> devices() {
+Future<List<NeoDevice>> deviceInformation() {
   return fetchNeoDescriptor().then((deviceInformation) {
     var devices = [];
     for (var dev in deviceInformation) {
@@ -98,6 +98,10 @@ void handleNeoCommand(CustomCommandEvent event) {
 
   switch (cmd) {
     case "subscribe":
+      if (args.isEmpty) {
+        event.reply("Usage: neo subscribe <device>", prefixContent: "neo");
+        return;
+      }
       var device = args.join(" ");
 
       deviceNames().then((names) {
@@ -118,6 +122,10 @@ void handleNeoCommand(CustomCommandEvent event) {
       });
       break;
     case "unsubscribe":
+      if (args.isEmpty) {
+        event.reply("Usage: neo unsubscribe <device>", prefixContent: "neo");
+        return;
+      }
       var device = args.join(" ");
 
       deviceNames().then((names) {
@@ -138,6 +146,10 @@ void handleNeoCommand(CustomCommandEvent event) {
       });
       break;
     case "subscriptions":
+      if (args.isNotEmpty) {
+        event.reply("Usage: neo subscriptions", prefixContent: "neo");
+        return;
+      }
       var subs = storage.json.keys.where((key) {
         return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains(event.network + ":" + event.user);
       }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " "))
@@ -150,8 +162,22 @@ void handleNeoCommand(CustomCommandEvent event) {
       }
       break;
     case "devices":
+      if (args.isNotEmpty) {
+        event.reply("Usage: neo devices", prefixContent: "neo");
+        return;
+      }
       deviceNames().then((devices) {
         event.reply("Devices: ${devices.join(", ")}", prefixContent: "neo");
+      });
+      break;
+    case "device":
+      if (args.isEmpty) {
+        event.reply("Usage: neo device <name|codename>", prefixContent: "neo");
+        return;
+      }
+      var device = args.join(" ");
+      deviceInformation().then((devices) {
+
       });
       break;
     default:
