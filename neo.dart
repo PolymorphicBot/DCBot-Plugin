@@ -27,7 +27,7 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
 }
 
 void onNeoBuildStarted(Map<String, dynamic> build) {
-  String displayName = build['fullName'].replaceAll("neo :: ", "");
+  String displayName = build['buildFullName'].replaceAll("neo :: ", "");
   String device = displayName.replaceAll(" ", "_").toLowerCase();
   List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
 
