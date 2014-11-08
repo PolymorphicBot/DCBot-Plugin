@@ -51,6 +51,7 @@ Future<List<NeoDevice>> deviceInformation() {
       device.name = dev['name'];
       device.codename = dev['codename'];
       device.manufacturer = dev['manufacturer'];
+      devices.add(device);
     }
     return devices;
   });
