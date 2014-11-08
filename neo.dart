@@ -175,9 +175,16 @@ void handleNeoCommand(CustomCommandEvent event) {
         event.reply("Usage: neo device <name|codename>", prefixContent: "neo");
         return;
       }
-      var device = args.join(" ");
+      var id = args.join(" ");
       deviceInformation().then((devices) {
+        for (var device in devices) {
+          if (device.name == id || device.codename == id) {
+            event.reply("name: ${device.name}, codename: ${device.codename}, manufacturer: ${device.manufacturer}", prefixContent: "neo");
+            return;
+          }
+        }
 
+        event.reply("Invalid Device Identifier '${id}'", prefixContent: "neo");
       });
       break;
     default:
