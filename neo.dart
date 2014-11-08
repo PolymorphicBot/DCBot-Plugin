@@ -43,7 +43,8 @@ class NeoDevice {
 }
 
 Future<List<NeoDevice>> deviceInformation() {
-  return fetchNeoDescriptor().then((deviceInformation) {
+  return fetchNeoDescriptor().then((descriptor) {
+    var deviceInformation = descriptor['devices'];
     var devices = [];
     for (var dev in deviceInformation) {
       var device = new NeoDevice();
