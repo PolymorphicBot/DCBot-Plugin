@@ -23,6 +23,8 @@ part "commands.dart";
 part "text_commands.dart";
 part "apidocs.dart";
 part "messages.dart";
+part "gitlab.dart";
+part "neo.dart";
 
 BotConnector bot;
 
@@ -44,6 +46,7 @@ void main(List<String> args, port) {
   storage.load();
   
   initTextCommands();
+  setupNeo();
   
   APIDocs.init();
   
