@@ -261,7 +261,9 @@ class Neo {
 
           event.reply("Name: ${name}, Path: ${path}", prefixContent: "neo");
           event.reply("Remote: ${remote}, Revision: ${revision}", prefixContent: "neo");
-          event.reply("Groups: ${groups.join(", ")}", prefixContent: "neo");
+          if (groups.isNotEmpty) {
+            event.reply("Groups: ${groups.join(", ")}", prefixContent: "neo");
+          }
           event.reply("Optional: ${optional}", prefixContent: "neo");
         });
         break;
