@@ -23,16 +23,12 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
     case "buildStarted":
       onNeoBuildStarted(build);
       break;
-    case "buildFixed":
-    case "buildSuccessful":
-      onNeoBuildSuccess(build);
+    case "buildFinished":
+      onNeoBuildFinished(build);
       break;
     default:
-      bot.message("EsperNet", "kaendfinger", "NEW TEAMCITY BUILD STATE: ${build['notifyType']}");
       break;
   }
-
-  print("TeamCity Build Notification: ${JSON.encode(json)}");
 }
 
 Future<Map<String, dynamic>> fetchNeoDescriptor() {
@@ -81,7 +77,7 @@ void onNeoBuildStarted(Map<String, dynamic> build) {
   }
 }
 
-void onNeoBuildSuccess(Map<String, dynamic> build) {
+void onNeoBuildFinished(Map<String, dynamic> build) {
   String displayName = build['buildFullName'].replaceAll("neo :: ", "");
   String device = displayName.replaceAll(" ", "_").toLowerCase();
   List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
@@ -90,7 +86,7 @@ void onNeoBuildSuccess(Map<String, dynamic> build) {
     var split = subscriber.split(":");
     var network = split[0];
     var user = split[1];
-    bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Finished Successfully for the ${displayName}.");
+    bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Finished with a status of ${build['buildStatus']} for the ${displayName}.");
   }
 }
 
