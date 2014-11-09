@@ -294,7 +294,7 @@ void handleCommand(CustomCommandEvent event) {
       APIDocs.handleWhatIsCmd(event);
       break;
     case "neo":
-      handleNeoCommand(event);
+      Neo.handleCommand(event);
       break;
   }
 }

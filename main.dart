@@ -4,6 +4,8 @@ import "dart:async";
 import "dart:io";
 import "dart:convert";
 
+import "package:neo/manifest.dart" as manifest;
+
 import "package:irc/irc.dart" show Color;
 import "package:polymorphic_bot/api.dart";
 
@@ -17,7 +19,6 @@ import "package:route/server.dart";
 import "package:http_server/http_server.dart";
 
 part "storage.dart";
-part "slack.dart";
 part "server.dart";
 part "commands.dart";
 part "text_commands.dart";
@@ -96,10 +97,8 @@ void main(List<String> args, port) {
   
   setupServer().then((_) {
     print("[DCBot] Server Started");
-    setupSlack();
-    setupNeo();
+    Neo.setup();
     GitLab.initialize();
-    print("[DCBot] Slack Integration Setup");
   });
 }
 
