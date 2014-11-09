@@ -233,7 +233,7 @@ class Neo {
             return;
           }
 
-          event.reply("Project Found.");
+          event.reply("Project Found.", prefixContent: "neo");
         });
         break;
       case "project":
