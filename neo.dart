@@ -31,6 +31,8 @@ void handleNeoTeamCityHook(Map<String, dynamic> json) {
       bot.message("EsperNet", "kaendfinger", "NEW TEAMCITY BUILD STATE: ${build['notifyType']}");
       break;
   }
+
+  print("TeamCity Build Notification: ${JSON.encode(json)}");
 }
 
 Future<Map<String, dynamic>> fetchNeoDescriptor() {
