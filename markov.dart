@@ -293,16 +293,6 @@ class MarkovChain {
           if (word.isNotEmpty) {
             sentence.add(word);
           }
-
-          var wordFrequency = 1;
-
-          if (wordsNext[word] != null) {
-            wordFrequency = words.get(words.lookup(word)).count;
-          }
-
-          if (random.nextDouble() > (wordFrequency / sentence.length)) {
-            // break;
-          }
         }
       }
       previousWord2 = previousWord;
@@ -397,90 +387,69 @@ class MarkovChain {
 
     return strings;
   }
-  
+
   String generateStatistics() {
-    return "Word triples next: " + wordTriplesNext.length.toString() + ", Word pairs next: " + wordPairsNext.length.toString()
-              + ", words next: " + wordsNext.length.toString() + ", word triples previous: " + wordTriplesPrevious.length.toString() + ", word pairs previous: " 
-              + wordPairsPrevious.length.toString() + ", words previous: " + wordsPrevious.length.toString() + ", words: "
-              + words.size.toString() + ", lines: " + globalLines.length.toString();
+    return "Word triples next: " + wordTriplesNext.length.toString() + ", Word pairs next: " + wordPairsNext.length.toString() + ", words next: " + wordsNext.length.toString() + ", word triples previous: " + wordTriplesPrevious.length.toString() + ", word pairs previous: " + wordPairsPrevious.length.toString() + ", words previous: " + wordsPrevious.length.toString() + ", words: " + words.size.toString() + ", lines: " + globalLines.length.toString();
   }
-  
+
   String generateWordStats(List<String> parts) {
-    if (parts.length > 1) 
-            {
-              String wordString = _selectivelyLowercase(parts[1]);
-              String argumentString = parts.join(" ");
-              int wordNum = argumentString.length - argumentString.replaceAll(" ", "").length;
-              if (words.lookup(wordString) != null)
-              {
-                Word word = words.get(words.lookup(wordString));
-                int empty = words.lookup("");
-                String nextWordString = "";
-                int nextWordCount = 0;
-                String previousWordString = "";
-                int previousWordCount = 0;
-                List<List<int>> nextWords = new List<List<int>>();
-                List<List<int>> previousWords = new List<List<int>>();
-                Map<String, List<int>> next = wordNum == 0 ? wordsNext : wordNum == 1 ? wordPairsNext : wordTriplesNext;
-                Map<String, List<int>> previous = wordNum == 0 ? wordsPrevious : wordNum == 1 ? wordPairsPrevious : wordTriplesPrevious;
-                if ((next[argumentString.toLowerCase()]) != null)
-                  for (int index in next[argumentString.toLowerCase()]) 
-                  {
-                    if(index == empty)
-                      continue;
-                    bool notFound = true;
-                    for (int i = 0; i < nextWords.length; i++)
-                      if (nextWords[i][0] == index) 
-                      {
-                        nextWords[i][1]++;
-                        if (nextWords[i][1] > nextWordCount) 
-                        {
-                          nextWordCount = nextWords[i][1];
-                          nextWordString = words.get(nextWords[i][0]).toString();
-                        }
-                        notFound = false;
-                        break;
-                      }
-                    if (notFound)
-                      nextWords.add([index, 1]);
-                  }
-
-                if (previous[argumentString.toLowerCase()] != null)
-                  for (int index in previous[argumentString.toLowerCase()])
-                  {
-                    if(index == empty)
-                      continue;
-                    bool notFound = true;
-                    for (int i = 0; i < previousWords.length; i++)
-                      if (previousWords[i][0] == index) 
-                      {
-                        previousWords[i][1]++;
-                        if (previousWords[i][1] > previousWordCount) 
-                        {
-                          previousWordCount = previousWords[i][1];
-                          previousWordString = words.get(previousWords[i][0]).toString();
-                        }
-                        notFound = false;
-                        break;
-                      }
-                    if (notFound)
-                      previousWords.add([index, 1]);
-                  }
-
-                if(next[argumentString.toLowerCase()] == null)
-                  return argumentString + " is not known";
-                return "\"" + argumentString.toLowerCase() + "\" has a count of " + (parts.length == 2 ? 
-                  "" + word.count.toString() + ", an index of "
-                  + words.lookup(wordString).toString()
-                  : next[argumentString.toLowerCase()].length)
-                  + ", with a most common next word of \""
-                  + nextWordString + "\" (" + nextWordCount.toString()
-                  + " times) and a most common previous word of \""
-                  + previousWordString + "\" (" + previousWordCount.toString() + ")";
-              } else
-                return wordString + " is not known";
+    if (parts.isEmpty) {
+      return "usage: wordstats <string>";
+    }
+    
+    String wordString = _selectivelyLowercase(parts.join(" "));
+    if (parts.length > 1) {
+      String argumentString = parts.join(" ");
+      int wordNum = argumentString.length - argumentString.replaceAll(" ", "").length;
+      if (words.lookup(wordString) != null) {
+        Word word = words.get(words.lookup(wordString));
+        int empty = words.lookup("");
+        String nextWordString = "";
+        int nextWordCount = 0;
+        String previousWordString = "";
+        int previousWordCount = 0;
+        List<List<int>> nextWords = new List<List<int>>();
+        List<List<int>> previousWords = new List<List<int>>();
+        Map<String, List<int>> next = wordNum == 0 ? wordsNext : wordNum == 1 ? wordPairsNext : wordTriplesNext;
+        Map<String, List<int>> previous = wordNum == 0 ? wordsPrevious : wordNum == 1 ? wordPairsPrevious : wordTriplesPrevious;
+        if ((next[argumentString.toLowerCase()]) != null) for (int index in next[argumentString.toLowerCase()]) {
+          if (index == empty) continue;
+          bool notFound = true;
+          for (int i = 0; i < nextWords.length; i++) if (nextWords[i][0] == index) {
+            nextWords[i][1]++;
+            if (nextWords[i][1] > nextWordCount) {
+              nextWordCount = nextWords[i][1];
+              nextWordString = words.get(nextWords[i][0]).toString();
             }
-    return "";
+            notFound = false;
+            break;
+          }
+          if (notFound) nextWords.add([index, 1]);
+        }
+
+        if (previous[argumentString.toLowerCase()] != null) for (int index in previous[argumentString.toLowerCase()]) {
+          if (index == empty) continue;
+          bool notFound = true;
+          for (int i = 0; i < previousWords.length; i++) if (previousWords[i][0] == index) {
+            previousWords[i][1]++;
+            if (previousWords[i][1] > previousWordCount) {
+              previousWordCount = previousWords[i][1];
+              previousWordString = words.get(previousWords[i][0]).toString();
+            }
+            notFound = false;
+            break;
+          }
+          if (notFound) previousWords.add([index, 1]);
+        }
+
+        if (next[argumentString.toLowerCase()] == null) return argumentString + " is not known";
+        return "\"" + argumentString.toLowerCase() + "\" has a count of " + (parts.length == 2 ? "" + word.count.toString() + ", an index of " + words.lookup(wordString).toString() : next[argumentString.toLowerCase()].length) + ", with a most common next word of \"" + nextWordString + "\" (" + nextWordCount.toString() + " times) and a most common previous word of \"" + previousWordString + "\" (" + previousWordCount.toString() + ")";
+      } else {
+        return wordString + " is not known";
+      }
+    } else {
+      return wordString + " is not known";
+    }
   }
 }
 
