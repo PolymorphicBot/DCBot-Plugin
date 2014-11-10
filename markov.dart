@@ -315,7 +315,7 @@ class MarkovChain {
     var stopwatch = new Stopwatch();
     stopwatch.start();
     File file = new File("data/DCBot/lines.txt");
-    if (file.existsSync()) {
+    if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
     file.readAsLinesSync().forEach(addLine);
