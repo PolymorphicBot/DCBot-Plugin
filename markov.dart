@@ -15,7 +15,7 @@ class MarkovChain {
 
   Map<String, List<int>> wordsNext = new Map<String, List<int>>();
   Map<String, List<int>> wordsPrevious = new Map<String, List<int>>();
-  Set<String> lines = new Set<String>();
+  Set<String> globalLines = new Set<String>();
 
   IntMap<String, Word> words = new IntMap<String, Word>();
 
@@ -23,8 +23,8 @@ class MarkovChain {
     {
       var lines = splitMultiple(line, [". ", "\n"]);
       for (var currentLine in lines) {
-        if (!lines.contains(currentLine)) {
-          lines.add(currentLine);
+        if (!globalLines.contains(currentLine)) {
+          globalLines.add(currentLine);
         } else {
           continue;
         }
@@ -68,7 +68,6 @@ class MarkovChain {
           wordList.add(wordIndex);
           wordPairsNext[pair] = wordList;
 
-
           wordList = wordsNext[currentWord];
           if (wordList == null) wordList = [];
           wordList.add(wordIndex);
@@ -79,7 +78,7 @@ class MarkovChain {
 
           triple = pair + " " + nextWord2;
           wordList = wordTriplesPrevious[triple];
-          if (wordList != null) {
+          if (wordList == null) {
             wordList = new List<int>();
           }
           wordList.add(wordIndex);
@@ -90,7 +89,6 @@ class MarkovChain {
           }
           wordList.add(wordIndex);
           wordPairsPrevious[pair] = wordList;
-
 
           wordList = wordsPrevious[currentWord];
           if (wordList == null) wordList = [];
@@ -368,7 +366,9 @@ class MarkovChain {
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
-    file.readAsLinesSync().forEach(addLine);
+    file.readAsLinesSync().forEach((line) {
+      addLine(line);
+    });
     stopwatch.stop();
     print("Loaded Lines in ${stopwatch.elapsedMicroseconds} milliseconds");
   }
@@ -378,7 +378,7 @@ class MarkovChain {
     var stopwatch = new Stopwatch();
     stopwatch.start();
 
-    file.writeAsStringSync(lines.join("\n"));
+    file.writeAsStringSync(globalLines.join("\n"));
 
     stopwatch.stop();
     print("Saved Lines in ${stopwatch.elapsedMicroseconds} milliseconds");
@@ -396,6 +396,13 @@ class MarkovChain {
     }
 
     return strings;
+  }
+  
+  String generateStatistics() {
+    return "Word triples next: " + wordTriplesNext.length.toString() + ", Word pairs next: " + wordPairsNext.length.toString()
+              + ", words next: " + wordsNext.length.toString() + ", word triples previous: " + wordTriplesPrevious.length.toString() + ", word pairs previous: " 
+              + wordPairsPrevious.length.toString() + ", words previous: " + wordsPrevious.length.toString() + ", words: "
+              + words.size.toString() + ", lines: " + globalLines.length.toString();
   }
 }
 

@@ -354,6 +354,9 @@ void handleCommand(CustomCommandEvent event) {
     case "markov-random":
       event.reply(markov.randomSentence(), prefix: false);
       break;
+    case "markov-stats":
+      event.reply(markov.generateStatistics(), prefix: false);
+      break;
   }
 }
 

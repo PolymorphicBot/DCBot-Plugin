@@ -9,6 +9,7 @@ void main() {
     print("${line} => ${reply}");
   }
   
-  test("Hello");
-  test("Welcome World");
+  print(chain.generateStatistics());
+  
+  test("i have");
 }
