@@ -351,6 +351,9 @@ void handleCommand(CustomCommandEvent event) {
         }
       });
       break;
+    case "markov-random":
+      event.reply(markov.randomSentence(), prefix: false);
+      break;
   }
 }
 
