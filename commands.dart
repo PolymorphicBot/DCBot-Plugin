@@ -274,6 +274,17 @@ void handleCommand(CustomCommandEvent event) {
         }
       });
       break;
+    case "removetxtcmd":
+      event.require("txtcmds.remove", () {
+        if (event.args.length != 1) {
+          event.reply("Usage: removetxtcmd <command>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          textCommandStorage.json.remove(cmd);
+          event.reply("Command Removed", prefixContent: "Text Commands");
+        }
+      });
+      break;
     case "addchannelcmd":
       event.require("txtcmds.channel.add", () {
         if (event.args.length < 2) {
@@ -281,8 +292,42 @@ void handleCommand(CustomCommandEvent event) {
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
+          textCommandStorage.set(event.network + " " + event.channel + " " + cmd, text);
+          event.reply("Command Added", prefixContent: "Text Commands");
+        }
+      });
+      break;
+    case "removechannelcmd":
+      event.require("txtcmds.channel.remove", () {
+        if (event.args.length != 1) {
+          event.reply("Usage: removechannelcmd <command>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          textCommandStorage.json.remove(event.network + " " + event.channel + " " + cmd);
+          event.reply("Command Removed", prefixContent: "Text Commands");
+        }
+      });
+      break;
+    case "addgchannelcmd":
+      event.require("txtcmds.channel.global.add", () {
+        if (event.args.length < 2) {
+          event.reply("Usage: addgchannelcmd <command> <text>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          var text = event.args.sublist(1).join(" ");
           textCommandStorage.set(event.channel + " " + cmd, text);
           event.reply("Command Added", prefixContent: "Text Commands");
+        }
+      });
+      break;
+    case "removegchannelcmd":
+      event.require("txtcmds.channel.global.remove", () {
+        if (event.args.length != 1) {
+          event.reply("Usage: removegchannelcmd <command>", prefixContent: "Text Commands");
+        } else {
+          var cmd = event.args[0];
+          textCommandStorage.json.remove(event.channel + " " + cmd);
+          event.reply("Command Removed", prefixContent: "Text Commands");
         }
       });
       break;
