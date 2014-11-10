@@ -17,7 +17,6 @@ class MarkovChain {
   IntMap<String, Word> words = new IntMap<String, Word>();
 
   void addLine(String line) {
-    print("Adding '${line}'");
     {
       var lines = splitMultiple(line, [". ", "\n"]);
       for (var currentLine in lines) {
