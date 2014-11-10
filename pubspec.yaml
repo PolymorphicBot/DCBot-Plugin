@@ -2,15 +2,16 @@ name: DCBot
 version: 1.0.0
 description: DirectCode Plugin for PolymorphicBot
 dependencies:
-  github: any
+  github:
+    git: git://github.com/DirectMyFile/github.dart.git
   http: '>=0.11.0'
   http_server: '>=0.9.3 <0.10.0'
   irc: '>=1.4.5 <1.4.9'
-  neo:
-    git: http://git.directcode.org/neo/tools.git
   polymorphic_bot:
     path: /home/kaendfinger/Polymorphic/Bot
   route: '>=0.4.6 <0.5.0'
+  neo:
+    git: http://git.directcode.org/neo/tools.git
 plugin:
   commands:
     help:

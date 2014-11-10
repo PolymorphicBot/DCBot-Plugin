@@ -32,6 +32,8 @@ part "neo.dart";
 BotConnector bot;
 
 Storage storage;
+MarkovChain markov;
+Timer markovTimer;
 
 http.Client httpClient = new http.Client();
 
@@ -42,6 +44,7 @@ String fancyPrefix(String name) {
 EventManager eventManager;
 
 void main(List<String> args, port) {
+  markov = new MarkovChain();
   bot = new BotConnector(port);
   
   storage = bot.createStorage("DCBot", "storage");
@@ -95,6 +98,12 @@ void main(List<String> args, port) {
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
+  });
+  
+  markov.load();
+  
+  markovTimer = new Timer.periodic(new Duration(seconds: 60), (timer) {
+    markov.save();
   });
   
   setupServer().then((_) {
