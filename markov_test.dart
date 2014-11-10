@@ -6,7 +6,7 @@ void main() {
   
   void test(String line) {
     var reply = chain.reply(line, "Alex", "DirectCodeBot");
-    print("<DirectCodeBot> ${reply}");
+    print("${line} => ${reply}");
   }
   
   test("Hello");

@@ -7,6 +7,9 @@ import "dart:collection";
 class MarkovChain {
   Math.Random random = new Math.Random();
 
+  HashMap<String, List<int>> wordTriplesNext = new HashMap<String, List<int>>();
+  HashMap<String, List<int>> wordTriplesPrevious = new HashMap<String, List<int>>();
+
   Map<String, List<int>> wordPairsNext = new Map<String, List<int>>();
   Map<String, List<int>> wordPairsPrevious = new Map<String, List<int>>();
 
@@ -28,27 +31,44 @@ class MarkovChain {
         var currentWords = currentLine.split(" ");
         currentWords.add("");
         var previousWord = "";
-        List<int> pairList = null;
+        String previousWord2 = "";
         List<int> wordList = null;
         String currentWord;
         String nextWord;
+        String nextWord2;
         String pair;
+        String triple;
+
         for (int i = 0; i < currentWords.length - 1; i++) {
           currentWord = _selectivelyLowercase(currentWords[i]);
           nextWord = _selectivelyLowercase(currentWords[i + 1]);
+          nextWord2 = i < currentWords.length - 2 ? _selectivelyLowercase(currentWords[i + 2]) : "";
           pair = previousWord + " " + currentWord;
+          triple = previousWord2 + " " + pair;
           int wordIndex = words.lookup(nextWord);
           if (wordIndex == null) {
             wordIndex = words.add(new Word(nextWord), nextWord);
           } else {
             words.get(wordIndex).increment();
           }
-          pairList = wordPairsNext[pair];
-          if (pairList == null) {
-            pairList = [];
+
+          wordList = wordTriplesNext[triple];
+
+          if (wordList == null) {
+            wordList = new List<int>();
           }
-          pairList.add(wordIndex);
-          wordPairsNext[pair] = pairList;
+          wordList.add(wordIndex);
+          wordTriplesNext[triple] = wordList;
+
+          wordList = wordPairsNext[pair];
+          if (wordList == null) {
+            wordList = new List<int>();
+          }
+
+          wordList.add(wordIndex);
+          wordPairsNext[pair] = wordList;
+
+
           wordList = wordsNext[currentWord];
           if (wordList == null) wordList = [];
           wordList.add(wordIndex);
@@ -56,14 +76,27 @@ class MarkovChain {
           wordIndex = words.lookup(previousWord);
           if (wordIndex == null) wordIndex = words.add(new Word(previousWord), previousWord);
           pair = currentWord + " " + nextWord;
-          pairList = wordPairsNext[pair];
-          if (pairList == null) pairList = [];
-          pairList.add(wordIndex);
-          wordPairsPrevious[pair] = pairList;
+
+          triple = pair + " " + nextWord2;
+          wordList = wordTriplesPrevious[triple];
+          if (wordList != null) {
+            wordList = new List<int>();
+          }
+          wordList.add(wordIndex);
+          wordTriplesPrevious[triple] = wordList;
+          wordList = wordPairsPrevious[pair];
+          if (wordList == null) {
+            wordList = [];
+          }
+          wordList.add(wordIndex);
+          wordPairsPrevious[pair] = wordList;
+
+
           wordList = wordsPrevious[currentWord];
           if (wordList == null) wordList = [];
           wordList.add(wordIndex);
           wordsPrevious[currentWord] = wordList;
+          previousWord2 = previousWord;
           previousWord = currentWord;
         }
       }
@@ -84,7 +117,7 @@ class MarkovChain {
 
     currentLines = inputString.split(". ");
     currentWords.addAll(currentLines[currentLines.length - 1].split(" "));
-    
+
     if (currentLines.length > 0) {
       for (int i = 0; i < currentLines.length - 1; i++) {
         allSentences += reply(currentLines[i]) + ". ";
@@ -112,18 +145,12 @@ class MarkovChain {
     for (int i = 0; i < currentWords.length; i++) {
       var currentWord = currentWords[i];
       var pairKey = previousWord + " " + currentWord;
-      int wordSize = (wordPairsNext[pairKey] != null ? wordPairsNext[pairKey].length : 0)
-          + (wordPairsPrevious[pairKey] != null ? wordPairsPrevious.length : 0);
-      int bestSize = (wordPairsNext[bestWordPair] != null ? wordPairsNext[bestWordPair].length : 0) +
-          (wordPairsPrevious[bestWordPair] != null ? wordPairsPrevious.length : 0);
+      int bestSize = (wordPairsNext[bestWordPair] != null ? wordPairsNext[bestWordPair].length : 0) + (wordPairsPrevious[bestWordPair] != null ? wordPairsPrevious.length : 0);
 
       if (bestSize == 0) bestWordPair = pairKey;
 
-      wordSize = (wordsNext[currentWord] != null ? wordsNext[currentWord].length : 0)
-          + (wordsPrevious[currentWord] != null ? wordsPrevious.length : 0);
-      bestSize = (wordsNext[bestWord] != null ? wordsNext[bestWord].length : 0)
-          + (wordsPrevious[bestWord] != null ? wordsPrevious.length : 0);
-      
+      bestSize = (wordsNext[bestWord] != null ? wordsNext[bestWord].length : 0) + (wordsPrevious[bestWord] != null ? wordsPrevious.length : 0);
+
       if (bestSize == 0) bestWord = currentWord;
 
       previousWord = currentWord;
@@ -150,6 +177,7 @@ class MarkovChain {
     }
 
     var nextWord = sentence.length > 1 ? sentence.last : "";
+    String nextWord2 = "";
 
     var wordPairsTemp = <String, List<int>>{};
     var wordsTemp = <String, List<int>>{};
@@ -168,16 +196,26 @@ class MarkovChain {
       }
 
       if (list != null && list.length > 0) {
-        int index = random.nextInt(list.length);
-        var word = words.get(list[index]).toString();
-        list.removeAt(index);
+        String triple = key + " " + nextWord2;
+        String word;
+
+        if (wordTriplesPrevious[triple] != null && wordTriplesPrevious[triple].length > 0 && (random.nextInt(50) > 4 / list.length)) {
+          list = wordTriplesPrevious[triple];
+          int index = random.nextInt(list.length);
+          word = words.get(list[index]).toString();
+        } else {
+          int index = random.nextInt(list.length);
+          word = words.get(list[index]).toString();
+          list.remove(index);
+        }
+
         if (word.isNotEmpty) {
           sentence.addFirst(word);
         }
       } else {
         key = currentWord;
         list = wordsTemp[key];
-        if (list == null) {
+        if (sentence.length / currentWords.length > random.nextDouble() && list == null) {
           if (wordsPrevious[key] != null) {
             wordsTemp[key] = new List.from(wordsPrevious[key]);
           }
@@ -193,15 +231,19 @@ class MarkovChain {
           }
         }
       }
-
+      nextWord2 = nextWord;
       nextWord = currentWord;
 
     }
 
+    String previousWord2 = "";
     if (sentence.length > 1) {
       previousWord = sentence.toList()[sentence.length - 2];
+      if (sentence.length > 2) {
+        previousWord2 = sentence.toList()[sentence.length - 3];
+      }
     }
-    
+
     wordPairsTemp = <String, List<int>>{};
     wordsTemp = <String, List<int>>{};
 
@@ -220,9 +262,17 @@ class MarkovChain {
       }
 
       if (list != null && list.length > 0) {
-        int index = random.nextInt(list.length);
-        String word = words.get(list[index]).toString();
-        list.removeAt(index);
+        String triple = previousWord2 + " " + key;
+        String word;
+        if (wordTriplesNext[triple] != null && wordTriplesNext[triple].length > 0 && (random.nextDouble() > 4 / list.length)) {
+          list = wordTriplesNext[triple];
+          int index = random.nextInt(list.length);
+          word = words.get(list[index]).toString();
+        } else {
+          int index = random.nextInt(list.length);
+          word = words.get(list.length).toString();
+          list.removeAt(index);
+        }
         if (word.isNotEmpty) {
           sentence.add(word);
         }
@@ -257,9 +307,10 @@ class MarkovChain {
           }
         }
       }
+      previousWord2 = previousWord;
       previousWord = currentWord;
     }
-    
+
     while (replyString.isEmpty) {
       replyString = sentence.isEmpty ? null : sentence.removeFirst();
     }
@@ -267,7 +318,7 @@ class MarkovChain {
     if (replyString.isNotEmpty) {
       replyString = replyString.substring(0, 1).toUpperCase() + replyString.substring(1);
     }
-    
+
     if (replyString.toLowerCase() == name.toLowerCase() && sender.isNotEmpty) {
       replyString = sender;
     }
