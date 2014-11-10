@@ -102,7 +102,7 @@ void main(List<String> args, port) {
   
   markov.load();
   
-  markovTimer = new Timer.periodic(new Duration(seconds: 5), (timer) {
+  markovTimer = new Timer.periodic(new Duration(seconds: 2), (timer) {
     markov.save();
   });
   
