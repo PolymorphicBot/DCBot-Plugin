@@ -9,7 +9,7 @@ void main() {
     print("${line} => ${reply}");
   }
   
-  print(chain.generateStatistics());
+  print(chain.generateWordStats(["i", "have"]));
   
   test("i have");
 }

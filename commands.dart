@@ -357,6 +357,9 @@ void handleCommand(CustomCommandEvent event) {
     case "markov-stats":
       event.reply(markov.generateStatistics(), prefix: false);
       break;
+    case "markov-wordstats":
+      event.reply(markov.generateWordStats(event.args), prefix: false);
+      break;
   }
 }
 
