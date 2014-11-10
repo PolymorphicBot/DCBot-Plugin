@@ -341,6 +341,16 @@ void handleCommand(CustomCommandEvent event) {
     case "neo":
       Neo.handleCommand(event);
       break;
+    case "toggle-markov":
+      event.require("markov.toggle", () {
+        markovEnabled = !markovEnabled;
+        if (markovEnabled) {
+          event.reply("Enabled", prefixContent: "Markov Chain");
+        } else {
+          event.reply("Disabled", prefixContent: "Markov Chain");
+        }
+      });
+      break;
   }
 }
 

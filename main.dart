@@ -15,6 +15,8 @@ import "package:github/dates.dart";
 
 import "package:http/http.dart" as http;
 
+import "markov.dart";
+
 import "package:route/server.dart";
 import "package:http_server/http_server.dart";
 
@@ -30,6 +32,8 @@ part "neo.dart";
 BotConnector bot;
 
 Storage storage;
+MarkovChain markov;
+Timer markovTimer;
 
 http.Client httpClient = new http.Client();
 
@@ -40,6 +44,7 @@ String fancyPrefix(String name) {
 EventManager eventManager;
 
 void main(List<String> args, port) {
+  markov = new MarkovChain();
   bot = new BotConnector(port);
   
   storage = bot.createStorage("DCBot", "storage");
@@ -93,6 +98,12 @@ void main(List<String> args, port) {
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
+  });
+  
+  markov.load();
+  
+  markovTimer = new Timer.periodic(new Duration(seconds: 5), (timer) {
+    markov.save();
   });
   
   setupServer().then((_) {
