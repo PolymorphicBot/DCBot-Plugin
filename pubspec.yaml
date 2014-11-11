@@ -9,7 +9,7 @@ dependencies:
   neo:
     git: http://git.directcode.org/neo/tools.git
   polymorphic_bot:
-    path: /home/kaendfinger/Polymorphic/Bot
+    git: git://github.com/PolymorphicBot/PolymorphicBot.git
   route: '>=0.4.6 <0.5.0'
 plugin:
   commands:
