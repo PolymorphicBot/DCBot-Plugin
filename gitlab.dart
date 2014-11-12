@@ -31,12 +31,8 @@ class GitLab {
     var commits = input['commits'];
     
     bot.message("EsperNet", channel, "[${repositoryName}] ${user} pushed to branch ${ref}:");
-    bot.message("Freenode", channel, "[${repositoryName}] ${user} pushed to branch ${ref}:");
-
 
     for (var commit in commits) {
-      bot.message("EsperNet", channel, "${commit['author']['name']}: ${commit['message']}");
-      bot.message("Freenode", channel, "${commit['author']['name']}: ${commit['message']}");
-    }
+      bot.message("EsperNet", channel, "${commit['author']['name']}: ${commit['message']}");}
   }
 }
