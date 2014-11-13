@@ -46,41 +46,45 @@ EventManager eventManager;
 void main(List<String> args, port) {
   markov = new MarkovChain();
   bot = new BotConnector(port);
-  
+
   storage = bot.createStorage("DCBot", "storage");
-  
+
   storage.load();
-  
+
   initTextCommands();
-  
+
   APIDocs.init();
-  
+
   print("[DCBot] Loading Plugin");
-  
+
   eventManager = bot.createEventManager();
-  
-  eventManager.on("message").listen((event) {
-    var totalCount = storage.get("messages_total", 0);
-    totalCount++;
-    storage.set("messages_total", totalCount);
-    
-    var netTotalCount = storage.get("${event['network']}_messages_total", 0);
-    netTotalCount++;
-    storage.set("${event['network']}_messages_total", netTotalCount);
-            
-    if (event['target'].startsWith("#")) {
-      var chanTotal = storage.get("${event['network']}_${event['target']}_messages_total", 0);
-      chanTotal++;
-      storage.set("${event['network']}_${event['target']}_messages_total", chanTotal);
-      
-      var chanUserTotal = storage.get("${event['network']}_${event['target']}_user_${event['from']}_messages_total", 0);
-      chanUserTotal++;
-      storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
-    }
-    handleMessage(event);
-  });
-  
-  eventManager.on("command").listen((event) {
+
+  {
+    var sub = eventManager.on("message").listen((event) {
+      var totalCount = storage.get("messages_total", 0);
+      totalCount++;
+      storage.set("messages_total", totalCount);
+
+      var netTotalCount = storage.get("${event['network']}_messages_total", 0);
+      netTotalCount++;
+      storage.set("${event['network']}_messages_total", netTotalCount);
+
+      if (event['target'].startsWith("#")) {
+        var chanTotal = storage.get("${event['network']}_${event['target']}_messages_total", 0);
+        chanTotal++;
+        storage.set("${event['network']}_${event['target']}_messages_total", chanTotal);
+
+        var chanUserTotal = storage.get("${event['network']}_${event['target']}_user_${event['from']}_messages_total", 0);
+        chanUserTotal++;
+        storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
+      }
+      handleMessage(event);
+    });
+
+    eventManager.registerSubscription(sub);
+  }
+
+  var sub = eventManager.on("command").listen((event) {
     var data = event;
     var network = data['network'] as String;
     var user = data['from'] as String;
@@ -92,20 +96,24 @@ void main(List<String> args, port) {
     handleCommand(cmdEvent);
     handleTextCommands(cmdEvent);
   });
-  
-  eventManager.on("shutdown").listen((event) {
+
+  eventManager.registerSubscription(sub);
+
+  eventManager.onShutdown(() {
+    print("I'm shutting down!");
     server.close(force: true);
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
+    markovTimer.cancel();
   });
-  
+
   markov.load();
-  
+
   markovTimer = new Timer.periodic(new Duration(seconds: 60), (timer) {
     markov.save();
   });
-  
+
   setupServer().then((_) {
     print("[DCBot] Server Started");
     Neo.setup();
