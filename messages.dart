@@ -10,9 +10,18 @@ void handleMessage(data) {
   
   String lower = message.toLowerCase();
   
-  if (message.startsWith("\$")) {
-    return;
-  }
+  String firstChar = message.substring(0, 1);
+  
+  bot.config.then((Map conf) {
+    if (conf["prefix"][network].containsKey(channel) &&
+        firstChar == conf["prefix"][network][channel]) {
+      print("channel skip");
+      return;
+    } else if (firstChar == conf["prefix"][network]["default"]) {
+      print("default skip");
+      return;
+    }
+  });
   
   if (lower.contains(new RegExp(r"(thank you|thanks) directcodebot")) ||
       lower.contains(new RegExp(r"directcodebot(\:|\,)? (thanks|thank you)"))) {
