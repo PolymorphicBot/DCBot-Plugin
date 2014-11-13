@@ -15,10 +15,8 @@ void handleMessage(data) {
   bot.config.then((Map conf) {
     if (conf["prefix"][network].containsKey(channel) &&
         firstChar == conf["prefix"][network][channel]) {
-      print("channel skip");
       return;
     } else if (firstChar == conf["prefix"][network]["default"]) {
-      print("default skip");
       return;
     }
   });
