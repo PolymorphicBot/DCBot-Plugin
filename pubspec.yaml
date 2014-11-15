@@ -19,6 +19,13 @@ plugin:
       description: Lists Commands for Each Plugin
     dart-version:
       description: Provides Dart Version Information
-      usage: dart-version [channel]
+      usage: [channel]
     reload:
       description: Reloads Plugins
+      usage: ""
+    command:
+      usage: <command>
+      description: Gives Command Information
+    stop:
+      usage: ""
+      description: Stops the Bot

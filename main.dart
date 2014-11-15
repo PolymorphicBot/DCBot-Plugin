@@ -100,17 +100,20 @@ void main(List<String> args, port) {
   eventManager.registerSubscription(sub);
 
   eventManager.onShutdown(() {
-    print("I'm shutting down!");
     server.close(force: true);
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
     markovTimer.cancel();
+    markov.save();
+
+    /* Release Memory */
+    markov = null;
   });
 
   markov.load();
 
-  markovTimer = new Timer.periodic(new Duration(seconds: 60), (timer) {
+  markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
     markov.save();
   });
 
