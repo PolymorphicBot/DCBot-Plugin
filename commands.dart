@@ -51,6 +51,11 @@ void handleCommand(CustomCommandEvent event) {
         event.reply("${event.args.join(' ')} breaks all the things.", prefix: false);
       }
       break;
+    case "uptime":
+      var diff = new DateTime.now().difference(startTime);
+      var str = "${diff.inDays} days, ${diff.inHours} hours, ${diff.inMinutes} minutes, ${diff.inSeconds} seconds";
+      event.reply("${str}", prefixContent: "Uptime");
+      break;
     case "hammertime":
       if (event.args.length == 0) {
         event.reply("U can't touch this.", prefix: false);
