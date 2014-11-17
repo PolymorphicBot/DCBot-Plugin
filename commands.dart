@@ -76,6 +76,7 @@ void handleCommand(CustomCommandEvent event) {
       int i = seconds;
       Timer timer = new Timer.periodic(new Duration(seconds: 1), (timer) {
         if (i > 5 && !((i % 5) == 0)) {
+          i--;
           return;
         }
 
