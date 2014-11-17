@@ -80,6 +80,10 @@ void handleCommand(CustomCommandEvent event) {
       int days;
       try {
         days = int.parse(event.args[0]);
+
+        if (days > 100000000) {
+          throw "FAIL";
+        }
       } catch (e) {
         event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
@@ -94,6 +98,10 @@ void handleCommand(CustomCommandEvent event) {
       int days;
       try {
         days = int.parse(event.args[0]);
+
+        if (days > 100000000) {
+          throw "FAIL";
+        }
       } catch (e) {
         event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
