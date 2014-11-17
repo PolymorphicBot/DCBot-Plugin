@@ -184,6 +184,10 @@ void handleCommand(CustomCommandEvent event) {
       event.reply("The Day is ${dayName(new DateTime.now().weekday)}", prefixContent: "DCBot");
       break;
     case "dart-version":
+      if (event.args.length > 2) {
+        event.reply("Usage: dart-version [channel]");
+        return;
+      }
       var chan = event.args.length == 1 ? event.args[0] : "stable";
       new HttpClient().getUrl(Uri.parse("https://commondatastorage.googleapis.com/dart-archive/channels/${chan}/${chan == "stable" ? "release" : "raw"}/latest/VERSION")).then((req) => req.close()).then((response) {
         response.transform(UTF8.decoder).join().then((value) {
