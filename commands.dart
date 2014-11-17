@@ -360,6 +360,15 @@ void handleCommand(CustomCommandEvent event) {
     case "markov-wordstats":
       event.reply(markov.generateWordStats(event.args), prefix: false);
       break;
+    case "linux-stable":
+      new HttpClient().getUrl(Uri.parse('https://www.kernel.org/releases.json')).then((req) => req.close()).then((response) {
+        response.transform(UTF8.decoder).join().then((value) {
+          var json = JSON.decode(value);
+          var latestStable = json['latest_stable'];
+          event.reply("Latest Stable: ${latestStable["version"]}", prefixContent: "Linux");
+        });
+      });
+      break;
   }
 }
 
