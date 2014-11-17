@@ -184,7 +184,7 @@ void handleCommand(CustomCommandEvent event) {
       event.reply("The Day is ${dayName(new DateTime.now().weekday)}", prefixContent: "DCBot");
       break;
     case "dart-version":
-      if (event.args.length > 2) {
+      if (event.args.length >= 2) {
         event.reply("Usage: dart-version [channel]");
         return;
       }
