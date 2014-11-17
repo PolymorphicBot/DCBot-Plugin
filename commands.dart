@@ -270,29 +270,8 @@ void handleCommand(CustomCommandEvent event) {
         });
       });
       break;
-    case "reload":
-      event.require("plugins.reload", () {
-        event.reply("Reloading Plugins", prefixContent: "Plugin Manager");
-        bot.send("reload-plugins", {
-          "network": event.network
-        });
-      });
-      break;
     case "year":
       event.reply("The Year is ${new DateTime.now().year}", prefixContent: "DCBot");
-      break;
-    case "cycle":
-      event.require("command.cycle", () {
-        bot.send("part", {
-          "network": event.network,
-          "channel": event.channel
-        });
-
-        bot.send("join", {
-          "network": event.network,
-          "channel": event.channel
-        });
-      });
       break;
     case "dartdoc":
       if (event.args.length > 2 || event.args.length < 1) {
