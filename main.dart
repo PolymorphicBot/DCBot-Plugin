@@ -100,7 +100,7 @@ void main(List<String> args, port) {
   eventManager.registerSubscription(sub);
 
   eventManager.onShutdown(() {
-    print("I'm shutting down!");
+    print("[DCBot] Unloading Plugin");
     server.close(force: true);
     httpClient.close();
     textCommandStorage.destroy();
