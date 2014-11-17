@@ -43,6 +43,8 @@ void handleCommand(CustomCommandEvent event) {
     }
   }
 
+  var countdowns = [];
+
   switch (event.command) {
     case "broken":
       if (event.args.length == 0) {
@@ -55,6 +57,40 @@ void handleCommand(CustomCommandEvent event) {
       var diff = new DateTime.now().difference(startTime);
       var str = "${diff.inDays} days, ${diff.inHours} hours, ${diff.inMinutes} minutes, ${diff.inSeconds} seconds";
       event.reply("${str}", prefixContent: "Uptime");
+      break;
+    case "countdown":
+      if (event.args.length != 1) {
+        event.reply("Usage: countdown <seconds>", prefixContent: "Countdown");
+        return;
+      }
+
+      int seconds;
+
+      try {
+        seconds = int.parse(event.args[0]);
+      } catch (e) {
+        event.reply("Invalid Number", prefixContent: "Countdown");
+        return;
+      }
+
+      int i = 0;
+      Timer timer = new Timer.periodic(new Duration(seconds: 1), (timer) {
+        i++;
+
+        if (i > 10 && !((i % 5) == 0)) {
+          return;
+        }
+
+        event.reply("${i}", prefixContent: "Countdown");
+
+        if (i == seconds) {
+          event.reply("Complete.", prefixContent: "Countdown");
+          timer.cancel();
+          countdowns.remove(timer);
+        }
+      });
+
+      countdowns.add(timer);
       break;
     case "hammertime":
       if (event.args.length == 0) {

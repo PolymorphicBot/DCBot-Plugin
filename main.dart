@@ -123,6 +123,10 @@ void main(List<String> args, port) {
       markov.save();
     }
 
+    for (var timer in countdowns) {
+    	timer.cancel();
+    }
+
     /* Release Memory */
     markov = null;
   });
