@@ -45,10 +45,18 @@ void handleCommand(CustomCommandEvent event) {
 
   switch (event.command) {
     case "broken":
-      event.reply("kaendfinger breaks all the things.", prefix: false);
+      if (event.args.length == 0) {
+        event.reply("kaendfinger breaks all the things.", prefix: false);
+      } else {
+        event.reply("${event.args.join(' ')} breaks all the things.", prefix: false);
+      }
       break;
     case "hammertime":
-      event.reply("U can't touch this.", prefix: false);
+      if (event.args.length == 0) {
+        event.reply("U can't touch this.", prefix: false);
+      } else {
+        event.reply("U can't touch ${event.args.join(' ')}.", prefix: false);
+      }
       break;
     case "hammer":
       event.reply(repeat("\u25AC", 4) + "\u258B", prefix: false);
