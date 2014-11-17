@@ -88,6 +88,10 @@ void handleCommand(CustomCommandEvent event) {
       int days;
       try {
         days = int.parse(event.args[0]);
+
+        if (days >= 100000000) {
+          throw "FAIL";
+        }
       } catch (e) {
         event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
@@ -102,6 +106,10 @@ void handleCommand(CustomCommandEvent event) {
       int days;
       try {
         days = int.parse(event.args[0]);
+
+        if (days >= 100000000) {
+          throw "FAIL";
+        }
       } catch (e) {
         event.reply("> ${event.args[0]} is not a valid number.", prefix: false);
         return;
@@ -192,7 +200,7 @@ void handleCommand(CustomCommandEvent event) {
       event.reply("The Day is ${dayName(new DateTime.now().weekday)}", prefixContent: "DCBot");
       break;
     case "dart-version":
-      if (event.args.length > 2) {
+      if (event.args.length >= 2) {
         event.reply("Usage: dart-version [channel]");
         return;
       }
