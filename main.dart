@@ -93,6 +93,17 @@ void main(List<String> args, port) {
     var args = data['args'] as List<String>;
     var message = data['message'] as String;
     var cmdEvent = new CustomCommandEvent(network, command, message, user, target, args);
+    {
+      var networkCommandsTotal = storage.get("${network}_commands_total", 0);
+      var channelCommandsTotal = storage.get("${network}_${target}_commands_total", 0);
+      var commandsTotal = storage.get("commands_total", 0);
+      networkCommandsTotal++;
+      channelCommandsTotal++;
+      commandsTotal++;
+      storage.set("${network}_commands_total", networkCommandsTotal);
+      storage.set("${network}_${target}_commands_total", channelCommandsTotal);
+      storage.set("commands_total", commandsTotal);
+    }
     handleCommand(cmdEvent);
     handleTextCommands(cmdEvent);
   });

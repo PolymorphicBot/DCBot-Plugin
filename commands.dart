@@ -171,25 +171,35 @@ void handleCommand(CustomCommandEvent event) {
       break;
     case "stats":
       var msgsTotal = storage.get("messages_total", 0);
+      var cmdsTotal = storage.get("commands_total", 0);
       var networkMsgsTotal = storage.get("${event.network}_messages_total", 0);
+      var networkCmdsTotal = storage.get("${event.network}_commands_total", 0);
       var channelMsgsTotal = storage.get("${event.network}_${event.channel}_messages_total", 0);
+      var channelCmdsTotal = storage.get("${event.network}_${event.channel}_commands_total", 0);
+
       event.replyNotice("Bot - Total Messages: ${msgsTotal}", prefixContent: "Statistics");
+      event.replyNotice("Users - Total Command Runs: ${cmdsTotal}", prefixContent: "Statistics");
       event.replyNotice("Network - Total Messages: ${networkMsgsTotal}", prefixContent: "Statistics");
       event.replyNotice("Channel - Total Messages: ${channelMsgsTotal}", prefixContent: "Statistics");
-      var users = [];
-      storage.map.keys.where((it) => it.startsWith("${event.network}_${event.channel}_user_")).forEach((name) {
-        users.add({
-          "name": name.replaceAll("${event.network}_${event.channel}_user_", "").replaceAll("_messages_total", ""),
-          "count": storage.get(name)
+      event.replyNotice("Network - Total Command Runs: ${cmdsTotal}", prefixContent: "Statistics");
+      event.replyNotice("Channel - Total Command Runs: ${channelCmdsTotal}", prefixContent: "Statistics");
+
+      {
+        var users = [];
+        storage.map.keys.where((it) => it.startsWith("${event.network}_${event.channel}_user_")).forEach((name) {
+          users.add({
+            "name": name.replaceAll("${event.network}_${event.channel}_user_", "").replaceAll("_messages_total", ""),
+            "count": storage.get(name)
+          });
         });
-      });
 
-      users.sort((a, b) => b['count'].compareTo(a['count']));
+        users.sort((a, b) => b['count'].compareTo(a['count']));
 
-      if (users.isNotEmpty) {
-        var most = users.first['name'];
+        if (users.isNotEmpty) {
+          var most = users.first['name'];
 
-        event.replyNotice("Most Talkative User on ${event.channel}: ${most}", prefixContent: "Statistics");
+          event.replyNotice("Most Talkative User on ${event.channel}: ${most}", prefixContent: "Statistics");
+        }
       }
       break;
     case "month":
