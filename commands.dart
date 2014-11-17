@@ -75,19 +75,19 @@ void handleCommand(CustomCommandEvent event) {
 
       int i = seconds;
       Timer timer = new Timer.periodic(new Duration(seconds: 1), (timer) {
-        i--;
-
         if (i > 5 && !((i % 5) == 0)) {
           return;
         }
 
         event.reply("${i}", prefixContent: "Countdown");
 
-        if (i == seconds) {
+        if (i == 0) {
           event.reply("Complete.", prefixContent: "Countdown");
           timer.cancel();
           countdowns.remove(timer);
         }
+
+        i--;
       });
 
       countdowns.add(timer);
