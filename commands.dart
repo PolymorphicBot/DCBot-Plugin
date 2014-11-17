@@ -1,5 +1,7 @@
 part of dcbot.plugin;
 
+var countdowns = [];
+
 const String BASE_DARTDOC = "http://www.dartdocs.org/documentation/";
 
 class CustomCommandEvent {
@@ -42,8 +44,6 @@ void handleCommand(CustomCommandEvent event) {
         break;
     }
   }
-
-  var countdowns = [];
 
   switch (event.command) {
     case "broken":
