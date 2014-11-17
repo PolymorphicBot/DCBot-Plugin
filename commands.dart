@@ -55,7 +55,11 @@ void handleCommand(CustomCommandEvent event) {
       break;
     case "uptime":
       var diff = new DateTime.now().difference(startTime);
-      var str = "${diff.inDays} days, ${diff.inHours} hours, ${diff.inMinutes} minutes, ${diff.inSeconds} seconds";
+      var days = diff.inDays;
+      var hours = diff.inHours - (days * 24);
+      var minutes = diff.inMinutes - (hours * 60);
+      var seconds = diff.inSeconds - (minutes * 60);
+      var str = "${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds";
       event.reply("${str}", prefixContent: "Uptime");
       break;
     case "countdown":
