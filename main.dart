@@ -106,12 +106,24 @@ void main(List<String> args, port) {
     textCommandStorage.destroy();
     storage.destroy();
     markovTimer.cancel();
+    if (markovEnabled) {
+      markov.save();
+    }
+
+    /* Release Memory */
+    markov = null;
   });
 
-  markov.load();
+  bot.getConfig().then((config) {
+    if (config['markov_load'] != false) {
+      markov.load();
+    }
+  });
 
-  markovTimer = new Timer.periodic(new Duration(seconds: 60), (timer) {
-    markov.save();
+  markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
+    if (markovEnabled) {
+      markov.save();
+    }
   });
 
   setupServer().then((_) {

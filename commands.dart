@@ -119,6 +119,35 @@ void handleCommand(CustomCommandEvent event) {
         }
       });
       break;
+    case "command":
+      if (event.args.length != 1) {
+        event.reply("Usage: command <command name>", prefixContent: "Command Information");
+      }
+
+      bot.get("command-exists", {
+        "command": event.args[0]
+      }).then((response) {
+        var exists = response['exists'];
+        if (exists) {
+          return bot.get("command-info", {
+            "command": event.args[0]
+          });
+        } else {
+          event.reply("Unknown Command: ${event.args[0]}", prefixContent: "Command Information");
+        }
+      }).then((info) {
+        var usage = info["usage"];
+        var description = info["description"];
+
+        if (description != null) {
+          event.reply("Description: ${description}", prefixContent: "Command Information");
+        }
+
+        if (usage != null) {
+          event.reply("Usage: ${event.args[0]} ${usage}", prefixContent: "Command Information");
+        }
+      });
+      break;
     case "plugins":
       bot.get("plugins").then((response) {
         event.reply("${response['plugins'].join(', ')}", prefixContent: "Plugins");
