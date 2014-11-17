@@ -81,7 +81,7 @@ void handleCommand(CustomCommandEvent event) {
       try {
         days = int.parse(event.args[0]);
 
-        if (days > 100000000) {
+        if (days >= 100000000) {
           throw "FAIL";
         }
       } catch (e) {
@@ -99,7 +99,7 @@ void handleCommand(CustomCommandEvent event) {
       try {
         days = int.parse(event.args[0]);
 
-        if (days > 100000000) {
+        if (days >= 100000000) {
           throw "FAIL";
         }
       } catch (e) {
