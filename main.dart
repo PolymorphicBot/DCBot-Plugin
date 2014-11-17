@@ -115,9 +115,10 @@ void main(List<String> args, port) {
   });
 
   bot.getConfig().then((config) {
-    if (config['markov_load'] != false) {
-      markov.load();
+    if (config['markov_load'] == false) {
+      return;
     }
+    markov.load();
   });
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
