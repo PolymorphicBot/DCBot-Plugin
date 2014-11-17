@@ -79,12 +79,12 @@ void handleCommand(CustomCommandEvent event) {
           return;
         }
 
-        event.reply("${i}", prefixContent: "Countdown");
-
         if (i == 0) {
           event.reply("Complete.", prefixContent: "Countdown");
           timer.cancel();
           countdowns.remove(timer);
+        } else {
+          event.reply("${i}", prefixContent: "Countdown");
         }
 
         i--;
