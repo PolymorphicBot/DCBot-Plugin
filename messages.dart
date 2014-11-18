@@ -1,5 +1,7 @@
 part of dcbot.plugin;
 
+Math.Random random = new Math.Random();
+
 bool markovEnabled = false;
 
 void handleMessage(data) {
@@ -29,6 +31,26 @@ void handleMessage(data) {
     if (lower.contains(new RegExp(r"directcodebot(\,|\:?)((\ )(is|is a little|is very|be|very|is super|super|you))? (buggy|sucks|sucky|awful|aweful)", caseSensitive: false))) {
       bot.message(network, channel, "${user}: Sorry for the bad experience. Will you file a bug report? https://github.com/PolymorphicBot/PolymorphicBot/issues/new");
       return;
+    }
+
+    if (lower.contains(new RegExp(r"don\'?t make me get(?: out)? the whip"))) {
+      bot.message(network, channel, "I like whips.");
+    }
+
+    {
+      var chance = random.nextInt(20);
+
+      if ((lower.contains("ed") || lower.contains("ing")) && (chance == 10)) {
+        bot.message(network, channel, "${message.replaceAll("ed", "forked").replaceAll("ing", "forking")}");
+      }
+    }
+
+    {
+      var chance = random.nextInt(20);
+
+      if ((lower.contains("kaendfinger")) && (chance == 5)) {
+        bot.message(network, channel, "did you mean kaendfork?");
+      }
     }
 
     if (markovEnabled && lower.contains("directcodebot")) {

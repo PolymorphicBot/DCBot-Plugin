@@ -1,6 +1,9 @@
 library dcbot.plugin;
 
 import "dart:async";
+
+import "dart:math" as Math;
+
 import "dart:io";
 import "dart:convert";
 
