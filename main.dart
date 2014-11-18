@@ -28,6 +28,7 @@ part "apidocs.dart";
 part "messages.dart";
 part "gitlab.dart";
 part "neo.dart";
+part "logs.dart";
 
 BotConnector bot;
 
