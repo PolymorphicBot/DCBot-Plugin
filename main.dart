@@ -34,6 +34,7 @@ BotConnector bot;
 
 Storage storage;
 MarkovChain markov;
+DateTime startTime;
 Timer markovTimer;
 
 http.Client httpClient = new http.Client();
@@ -45,6 +46,7 @@ String fancyPrefix(String name) {
 EventManager eventManager;
 
 void main(List<String> args, port) {
+  startTime = new DateTime.now();
   markov = new MarkovChain();
   bot = new BotConnector(port);
 
@@ -120,6 +122,10 @@ void main(List<String> args, port) {
     markovTimer.cancel();
     if (markovEnabled) {
       markov.save();
+    }
+
+    for (var timer in countdowns) {
+    	timer.cancel();
     }
 
     /* Release Memory */

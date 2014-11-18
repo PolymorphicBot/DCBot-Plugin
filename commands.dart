@@ -1,5 +1,7 @@
 part of dcbot.plugin;
 
+var countdowns = [];
+
 const String BASE_DARTDOC = "http://www.dartdocs.org/documentation/";
 
 class CustomCommandEvent {
@@ -50,6 +52,50 @@ void handleCommand(CustomCommandEvent event) {
       } else {
         event.reply("${event.args.join(' ')} breaks all the things.", prefix: false);
       }
+      break;
+    case "uptime":
+      var diff = new DateTime.now().difference(startTime);
+      var days = diff.inDays;
+      var hours = diff.inHours - (days * 24);
+      var minutes = diff.inMinutes - (hours * 60);
+      var seconds = diff.inSeconds - (minutes * 60);
+      var str = "${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds";
+      event.reply("${str}", prefixContent: "Uptime");
+      break;
+    case "countdown":
+      if (event.args.length != 1) {
+        event.reply("Usage: countdown <seconds>", prefixContent: "Countdown");
+        return;
+      }
+
+      int seconds;
+
+      try {
+        seconds = int.parse(event.args[0]);
+      } catch (e) {
+        event.reply("Invalid Number", prefixContent: "Countdown");
+        return;
+      }
+
+      int i = seconds;
+      Timer timer = new Timer.periodic(new Duration(seconds: 1), (timer) {
+        if (i > 5 && !((i % 5) == 0)) {
+          i--;
+          return;
+        }
+
+        if (i == 0) {
+          event.reply("Complete.", prefixContent: "Countdown");
+          timer.cancel();
+          countdowns.remove(timer);
+        } else {
+          event.reply("${i}", prefixContent: "Countdown");
+        }
+
+        i--;
+      });
+
+      countdowns.add(timer);
       break;
     case "hammertime":
       if (event.args.length == 0) {
@@ -228,29 +274,8 @@ void handleCommand(CustomCommandEvent event) {
         });
       });
       break;
-    case "reload":
-      event.require("plugins.reload", () {
-        event.reply("Reloading Plugins", prefixContent: "Plugin Manager");
-        bot.send("reload-plugins", {
-          "network": event.network
-        });
-      });
-      break;
     case "year":
       event.reply("The Year is ${new DateTime.now().year}", prefixContent: "DCBot");
-      break;
-    case "cycle":
-      event.require("command.cycle", () {
-        bot.send("part", {
-          "network": event.network,
-          "channel": event.channel
-        });
-
-        bot.send("join", {
-          "network": event.network,
-          "channel": event.channel
-        });
-      });
       break;
     case "dartdoc":
       if (event.args.length > 2 || event.args.length < 1) {
