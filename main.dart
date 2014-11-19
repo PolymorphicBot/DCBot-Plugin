@@ -136,7 +136,7 @@ void main(List<String> args, port) {
   });
 
   bot.getConfig().then((config) {
-    if (config['markov_load'] == false) {
+    if (config['markov_load'] != null && !config['markov_load']) {
       return;
     }
     markov.load();

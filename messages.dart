@@ -38,7 +38,7 @@ void handleMessage(data) {
     }
 
     {
-      var chance = random.nextInt(20);
+      var chance = random.nextInt(5000);
 
       if ((lower.contains("ed") || lower.contains("ing")) && (chance == 10)) {
         bot.message(network, channel, "${message.replaceAll("ed", "forked").replaceAll("ing", "forking")}");
@@ -46,7 +46,7 @@ void handleMessage(data) {
     }
 
     {
-      var chance = random.nextInt(20);
+      var chance = random.nextInt(40);
 
       if ((lower.contains("kaendfinger")) && (chance == 5)) {
         bot.message(network, channel, "did you mean kaendfork?");
