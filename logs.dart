@@ -1,5 +1,5 @@
 part of dcbot.plugin;
 
-void handleLogging(CustomMessageEvent event) {
-
+void handleLogging(var event) {
+  print("[${new DateTime.now().millisecondsSinceEpoch}] <${event['from']}> ${event['message']}");
 }

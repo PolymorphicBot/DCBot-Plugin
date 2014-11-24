@@ -85,6 +85,7 @@ void main(List<String> args, port) {
         storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
       }
       handleMessage(event);
+      handleLogging(event);
     });
 
     eventManager.registerSubscription(sub);
@@ -138,8 +139,18 @@ void main(List<String> args, port) {
   bot.getConfig().then((config) {
     if (config['markov_load'] == false) {
       return;
+    } else {
+      markov.load();
     }
-    markov.load();
+    if (config['gitlab_load'] == false) {
+      return;
+    } else {
+      setupServer().then((_) {
+        print("[DCBot] Server Started");
+        Neo.setup();
+        GitLab.initialize();
+      });
+    }
   });
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
@@ -147,11 +158,4 @@ void main(List<String> args, port) {
       markov.save();
     }
   });
-
-  setupServer().then((_) {
-    print("[DCBot] Server Started");
-    Neo.setup();
-    GitLab.initialize();
-  });
 }
-
