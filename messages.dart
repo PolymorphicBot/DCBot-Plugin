@@ -28,7 +28,13 @@ void handleMessage(data) {
       return;
     }
 
-    if (lower.contains(new RegExp(r"directcodebot(\,|\:?)((\ )(is|is a little|is very|be|very|is super|super|you))? (buggy|sucks|sucky|awful|aweful)", caseSensitive: false))) {
+    if (lower.contains(new RegExp(r"directcodebot is (sexy|a sexy mofo|very smart|smart|swaggy|a swagster|my brah|my homie)", caseSensitive: false)))
+    {
+      bot.message(network, channel, "${user}: Thanks! You are too :)");
+      return;
+    }
+
+    if (lower.contains(new RegExp(r"directcodebot(\,|\:?)((\ )(is|is a little|is very|be|very|is super|super|you))? (buggy|sucks|sucky|awful|aweful|smells|smelly|stinky)", caseSensitive: false))) {
       bot.message(network, channel, "${user}: Sorry for the bad experience. Will you file a bug report? https://github.com/PolymorphicBot/PolymorphicBot/issues/new");
       return;
     }
