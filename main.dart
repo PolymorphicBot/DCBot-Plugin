@@ -142,15 +142,12 @@ void main(List<String> args, port) {
     } else {
       markov.load();
     }
-    if (config['gitlab_load'] == false) {
-      return;
-    } else {
-      setupServer().then((_) {
-        print("[DCBot] Server Started");
-        Neo.setup();
-        GitLab.initialize();
-      });
-    }
+  });
+  
+  setupServer().then((_) {
+    print("[DCBot] Server Started");
+    Neo.setup();
+    GitLab.initialize();
   });
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
