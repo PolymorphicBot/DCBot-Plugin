@@ -123,7 +123,8 @@ void setupServices() {
       "members.removed",
       "github.hook",
       "gitlab.hook",
-      "neo.teamcity.hook"
+      "neo.teamcity.hook",
+      "irc.send.message"
     ]);
 
     eventBus.on("members.added").listen((event) {
