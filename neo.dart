@@ -8,13 +8,8 @@ class NeoDevice {
 
 class Neo {
   static void setup() {
-    router.serve("/teamcity/neo", method: "POST").listen((request) {
-      var response = request.response;
-      return HttpBodyHandler.processRequest(request).then((body) {
-        handleTeamCityHook(body.body);
-        response.write("");
-        return response.close();
-      });
+    eventBus.on("neo.teamcity.hook").listen((data) {
+      handleTeamCityHook(data);
     });
   }
 

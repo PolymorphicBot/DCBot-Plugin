@@ -24,7 +24,6 @@ import "package:route/server.dart";
 import "package:http_server/http_server.dart";
 
 part "storage.dart";
-part "server.dart";
 part "commands.dart";
 part "text_commands.dart";
 part "apidocs.dart";
@@ -68,12 +67,14 @@ void main(List<String> args, port) {
 
   {
     var sub = eventManager.on("message").listen((event) {
-      eventBus.emit("irc.message", {
-        "network": event['network'],
-        "channel": event['channel'],
-        "user": event['user'],
-        "message": event['message']
-      });
+      if (eventBus != null) {
+        eventBus.emit("irc.message", {
+          "network": event['network'],
+          "channel": event['channel'],
+          "user": event['user'],
+          "message": event['message']
+        });
+      }
 
       var totalCount = storage.get("messages_total", 0);
       totalCount++;
@@ -127,7 +128,6 @@ void main(List<String> args, port) {
 
   eventManager.onShutdown(() {
     print("[DCBot] Unloading Plugin");
-    server.close(force: true);
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
@@ -147,12 +147,6 @@ void main(List<String> args, port) {
   bot.getConfig().then((config) {
     servicesToken = config['services_token'] != null ? config['services_token'] : "";
     setupServices();
-  });
-  
-  setupServer().then((_) {
-    print("[DCBot] Server Started");
-    Neo.setup();
-    GitLab.initialize();
   });
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {

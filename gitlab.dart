@@ -2,18 +2,7 @@ part of dcbot.plugin;
 
 class GitLab {
   static void initialize() {
-    router.serve("/gitlab/hook", method: "POST").listen((request) {
-      var response = request.response;
-      HttpBodyHandler.processRequest(request).then((body) {
-        Map<String, dynamic> json = body.body;
-
-        handleHookEvent(json);
-
-        response.write("");
-
-        return response.close();
-      });
-    });
+    eventBus.on("gitlab.hook").listen(handleHookEvent);
   }
 
   static void handleHookEvent(Map<String, dynamic> input) {

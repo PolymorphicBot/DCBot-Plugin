@@ -28,7 +28,7 @@ class ServiceEventBus {
     });
   }
 
-  Future connect() {
+  Future connect({bool reconnect: true}) {
     return WebSocket.connect(url).then((socket) {
       _socket = socket;
 
@@ -36,6 +36,13 @@ class ServiceEventBus {
         var json = JSON.decode(data);
         _controller.add(json);
         print(json);
+      });
+      
+      socket.done.then((_) {
+        _socket = null;
+        if (reconnect) {
+          return connect();
+        }
       });
     });
   }
@@ -94,13 +101,17 @@ ServiceEventBus eventBus;
 
 void setupServices() {
   eventBus = new ServiceEventBus("ws://${servicesUrl}/events/ws", servicesToken);
+  
   eventBus.connect().then((_) {
     print("Connected to Event Bus");
   });
 
   eventBus.subscribe([
     "members.added",
-    "members.removed"
+    "members.removed",
+    "github.hook",
+    "gitlab.hook",
+    "neo.teamcity.hook"
   ]);
 
   eventBus.on("members.added").listen((event) {
