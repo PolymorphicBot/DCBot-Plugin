@@ -144,10 +144,8 @@ void main(List<String> args, port) {
     markov = null;
   });
 
-  bot.getConfig().then((config) {
-    servicesToken = config['services_token'] != null ? config['services_token'] : "";
-    setupServices();
-  });
+  servicesToken = storage.get("services_token");
+  setupServices();
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
     if (markovEnabled) {
