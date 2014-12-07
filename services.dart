@@ -39,7 +39,7 @@ class ServiceEventBus {
 
   Future connect({bool reconnect: true}) {
     _connectCompleter = new Completer();
-    return WebSocket.connect(url).then((socket) {
+    WebSocket.connect(url).then((socket) {
       _socket = socket;
 
       socket.listen((data) {
@@ -54,6 +54,8 @@ class ServiceEventBus {
           return connect();
         }
       });
+    }).catchError((e) {
+      print("Failed to Connect to the Event Bus.");
     });
     return _connectCompleter.future;
   }
