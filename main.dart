@@ -145,7 +145,7 @@ void main(List<String> args, port) {
   });
 
   bot.getConfig().then((config) {
-    servicesToken = config['services_token'] != null config['services_token'] : "";
+    servicesToken = config['services_token'] != null ? config['services_token'] : "";
     setupServices();
   });
   
