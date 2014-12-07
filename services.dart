@@ -133,6 +133,13 @@ void setupServices() {
     eventBus.on("members.removed").listen((event) {
       bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is no longer a member");
     });
+    
+    eventBus.on("irc.send.message").listen((event) {
+      var network = event['network'];
+      var target = event['target'];
+      var msg = event['message'];
+      bot.message(network, target, msg);
+    });
   });
 }
 
