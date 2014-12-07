@@ -145,22 +145,14 @@ void main(List<String> args, port) {
   });
 
   bot.getConfig().then((config) {
-    if (config['markov_load'] != null && !config['markov_load']) {
-      return;
-    } else {
-      markov.load();
-    }
-    if (config['gitlab_load'] == false) {
-      return;
-    } else {
-      setupServer().then((_) {
-        print("[DCBot] Server Started");
-        Neo.setup();
-        GitLab.initialize();
-      });
-    }
     servicesToken = config['services_token'] != null config['services_token'] : "";
     setupServices();
+  });
+  
+  setupServer().then((_) {
+    print("[DCBot] Server Started");
+    Neo.setup();
+    GitLab.initialize();
   });
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
