@@ -104,22 +104,22 @@ void setupServices() {
   
   eventBus.connect().then((_) {
     print("Connected to Event Bus");
-  });
+  
+    eventBus.subscribe([
+      "members.added",
+      "members.removed",
+      "github.hook",
+      "gitlab.hook",
+      "neo.teamcity.hook"
+    ]);
 
-  eventBus.subscribe([
-    "members.added",
-    "members.removed",
-    "github.hook",
-    "gitlab.hook",
-    "neo.teamcity.hook"
-  ]);
+    eventBus.on("members.added").listen((event) {
+      bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is now a member");
+    });
 
-  eventBus.on("members.added").listen((event) {
-    bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is now a member");
-  });
-
-  eventBus.on("members.removed").listen((event) {
-    bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is no longer a member");
+    eventBus.on("members.removed").listen((event) {
+      bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is no longer a member");
+    });
   });
 }
 
