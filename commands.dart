@@ -454,6 +454,8 @@ void handleCommand(CustomCommandEvent event) {
       });
       break;
   }
+
+  handleServicesCommand(event);
 }
 
 Future<String> dartdocUrl(String package, [String version = "latest"]) {

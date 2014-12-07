@@ -32,6 +32,7 @@ part "messages.dart";
 part "gitlab.dart";
 part "neo.dart";
 part "logs.dart";
+part "services.dart";
 
 BotConnector bot;
 
@@ -67,6 +68,13 @@ void main(List<String> args, port) {
 
   {
     var sub = eventManager.on("message").listen((event) {
+      eventBus.emit("irc.message", {
+        "network": event['network'],
+        "channel": event['channel'],
+        "user": event['user'],
+        "message": event['message']
+      });
+
       var totalCount = storage.get("messages_total", 0);
       totalCount++;
       storage.set("messages_total", totalCount);
@@ -152,6 +160,8 @@ void main(List<String> args, port) {
       });
     }
   });
+
+  setupServices();
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
     if (markovEnabled) {
