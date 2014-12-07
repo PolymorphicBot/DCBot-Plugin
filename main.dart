@@ -159,9 +159,9 @@ void main(List<String> args, port) {
         GitLab.initialize();
       });
     }
+    servicesToken = config['services_token'] != null config['services_token'] : "";
+    setupServices();
   });
-
-  setupServices();
 
   markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
     if (markovEnabled) {

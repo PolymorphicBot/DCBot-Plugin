@@ -112,8 +112,9 @@ void setupServices() {
   });
 }
 
-const String servicesUrl = "127.0.0.1:8090";
-const String servicesToken = "DirectCodeBot";
+const String servicesUrl = "services.directcode.org";
+
+String servicesToken;
 
 void handleServicesCommand(CustomCommandEvent event) {
   switch (event.command) {
