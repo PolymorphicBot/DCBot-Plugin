@@ -11,6 +11,8 @@ class ServiceEventBus {
   StreamController<Map<String, dynamic>> _controller = new StreamController();
   Stream<Map<String, dynamic>> _stream;
 
+  Completer _connectCompleter;
+  
   ServiceEventBus(this.url, this.token) {
     _stream = _controller.stream.asBroadcastStream();
     _init();
@@ -29,10 +31,14 @@ class ServiceEventBus {
       while (_queue.isNotEmpty) {
         _socket.add(_queue.removeAt(0));
       }
+      if (_connectCompleter != null) {
+        _connectCompleter.complete();
+      }
     });
   }
 
   Future connect({bool reconnect: true}) {
+    _connectCompleter = new Completer();
     return WebSocket.connect(url).then((socket) {
       _socket = socket;
 
@@ -49,6 +55,7 @@ class ServiceEventBus {
         }
       });
     });
+    return _connectCompleter.future;
   }
 
   void _sendJSON(object) {
