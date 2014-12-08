@@ -5,7 +5,8 @@ class ServiceEventBus {
   final String token;
 
   List<String> _queue = [];
-
+  List<String> subscriptions = [];
+  
   WebSocket _socket;
 
   StreamController<Map<String, dynamic>> _controller = new StreamController();
@@ -124,7 +125,9 @@ void setupServices() {
       "github.hook",
       "gitlab.hook",
       "neo.teamcity.hook",
-      "irc.send.message"
+      "irc.send.message",
+      "irc.send.raw",
+      "irc.get.networks"
     ]);
 
     eventBus.on("members.added").listen((event) {
@@ -140,6 +143,31 @@ void setupServices() {
       var target = event['target'];
       var msg = event['message'];
       bot.message(network, target, msg);
+    });
+    
+    eventBus.on("irc.send.raw").listen((event) {
+      var network = event['network'];
+      var line = event['line'];
+      bot.send("raw", {
+        "network": network,
+        "line": line
+      });
+    });
+    
+    eventBus.on("irc.get.networks").listen((event) {
+      bot.getNetworks().then((networks) {
+        eventBus.emit("irc.networks", {
+          "networks": networks
+        });
+      });
+    });
+    
+    eventManager.on("join").listen((event) {
+      eventBus.emit("irc.user.join", event);
+    });
+    
+    eventManager.on("part").listen((event) {
+      eventBus.emit("irc.user.part", event);
     });
   });
 }
@@ -160,4 +188,13 @@ void handleServicesCommand(CustomCommandEvent event) {
       });
       break;
   }
+  
+  eventBus.emit("irc.command", {
+    "network": event.network,
+    "channel": event.channel,
+    "user": event.user,
+    "message": event.message,
+    "command": event.command,
+    "args": event.args
+  });
 }

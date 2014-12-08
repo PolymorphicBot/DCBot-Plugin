@@ -64,7 +64,6 @@ void main(List<String> args, port) {
   print("[DCBot] Loading Plugin");
 
   eventManager = bot.createEventManager();
-
   {
     var sub = eventManager.on("message").listen((event) {
       if (eventBus != null) {
