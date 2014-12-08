@@ -4,13 +4,11 @@ description: DirectCode Plugin for PolymorphicBot
 dependencies:
   github: any
   http: '>=0.11.0'
-  http_server: '>=0.9.3 <0.10.0'
-  irc: '>=1.4.5 <1.4.9'
+  irc: '>=1.4.6 <1.4.9'
   neo:
     git: http://git.directcode.org/neo/tools.git
   polymorphic_bot:
     git: git://github.com/PolymorphicBot/PolymorphicBot.git
-  route: '>=0.4.6 <0.5.0'
 plugin:
   commands:
     help:
@@ -19,10 +17,11 @@ plugin:
       description: Lists Commands for Each Plugin
     dart-version:
       description: Provides Dart Version Information
-      usage: [channel]
+      usage:
+      - channel
     command:
       usage: <command>
       description: Gives Command Information
     stop:
-      usage: ""
+      usage: ''
       description: Stops the Bot

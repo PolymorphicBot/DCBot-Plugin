@@ -20,9 +20,6 @@ import "package:http/http.dart" as http;
 
 import "markov.dart";
 
-import "package:route/server.dart";
-import "package:http_server/http_server.dart";
-
 part "storage.dart";
 part "commands.dart";
 part "text_commands.dart";
@@ -30,7 +27,6 @@ part "apidocs.dart";
 part "messages.dart";
 part "gitlab.dart";
 part "neo.dart";
-part "logs.dart";
 part "services.dart";
 
 BotConnector bot;
@@ -93,7 +89,6 @@ void main(List<String> args, port) {
         storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
       }
       handleMessage(event);
-      handleLogging(event);
     });
 
     eventManager.registerSubscription(sub);

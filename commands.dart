@@ -436,7 +436,11 @@ void handleCommand(CustomCommandEvent event) {
       });
       break;
     case "markov-random":
-      event.reply(markov.randomSentence(), prefix: false);
+      try {
+        event.reply(markov.randomSentence(), prefix: false);
+      } catch (e) {
+        event.reply("Sorry, this command is still broken: ${e}", prefix: false);
+      }
       break;
     case "markov-stats":
       event.reply(markov.generateStatistics(), prefix: false);
@@ -453,6 +457,7 @@ void handleCommand(CustomCommandEvent event) {
         });
       });
       break;
+    case "":
   }
 
   handleServicesCommand(event);
