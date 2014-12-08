@@ -69,8 +69,8 @@ void main(List<String> args, port) {
       if (eventBus != null) {
         eventBus.emit("irc.message", {
           "network": event['network'],
-          "channel": event['channel'],
-          "user": event['user'],
+          "channel": event['target'],
+          "user": event['from'],
           "message": event['message']
         });
       }
