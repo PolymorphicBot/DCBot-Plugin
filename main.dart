@@ -9,7 +9,7 @@ import "dart:convert";
 
 import "package:neo/manifest.dart" as manifest;
 
-import "package:irc/irc.dart" show Color;
+import "package:irc/client.dart" show Color;
 import "package:polymorphic_bot/api.dart";
 
 import "package:quiver/strings.dart";
