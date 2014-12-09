@@ -4,7 +4,7 @@ description: DirectCode Plugin for PolymorphicBot
 dependencies:
   github: any
   http: '>=0.11.0'
-  irc: '>=1.4.6 <1.4.9'
+  irc: '>=2.0.0 <3.0.0'
   neo:
     git: http://git.directcode.org/neo/tools.git
   polymorphic_bot:

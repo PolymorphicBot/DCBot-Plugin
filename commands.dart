@@ -457,7 +457,6 @@ void handleCommand(CustomCommandEvent event) {
         });
       });
       break;
-    case "":
   }
 
   handleServicesCommand(event);
