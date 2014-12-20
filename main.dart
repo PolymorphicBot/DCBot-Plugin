@@ -13,7 +13,6 @@ import "package:irc/client.dart" show Color;
 import "package:polymorphic_bot/api.dart";
 
 import "package:quiver/strings.dart";
-
 import "package:github/dates.dart";
 
 import "package:http/http.dart" as http;
@@ -23,7 +22,6 @@ import "markov.dart";
 part "storage.dart";
 part "commands.dart";
 part "text_commands.dart";
-part "apidocs.dart";
 part "messages.dart";
 part "gitlab.dart";
 part "neo.dart";
@@ -54,8 +52,6 @@ void main(List<String> args, port) {
   storage.load();
 
   initTextCommands();
-
-  APIDocs.init();
 
   print("[DCBot] Loading Plugin");
 
@@ -131,7 +127,7 @@ void main(List<String> args, port) {
     }
 
     for (var timer in countdowns) {
-    	timer.cancel();
+      timer.cancel();
     }
 
     /* Release Memory */

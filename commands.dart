@@ -277,75 +277,6 @@ void handleCommand(CustomCommandEvent event) {
     case "year":
       event.reply("The Year is ${new DateTime.now().year}", prefixContent: "DCBot");
       break;
-    case "dartdoc":
-      if (event.args.length > 2 || event.args.length < 1) {
-        event.reply("> Usage: dartdoc <package> [version]", prefix: false);
-      } else {
-        String package = event.args[0];
-        String version = event.args.length == 2 ? event.args[1] : "latest";
-        dartdocUrl(event.args[0], version).then((url) {
-          if (url == null) {
-            event.reply("> package not found '${package}@${version}'", prefix: false);
-          } else {
-            event.reply("> Documentation: ${url}", prefix: false);
-          }
-        });
-      }
-      break;
-    case "pub-latest":
-      if (event.args.length == 0) {
-        event.reply("> Usage: pub-latest <package>", prefix: false);
-      } else {
-        latestPubVersion(event.args[0]).then((version) {
-          if (version == null) {
-            event.reply("> No Such Package: ${event.args[0]}", prefix: false);
-          } else {
-            event.reply("> Latest Version: ${version}", prefix: false);
-          }
-        });
-      }
-      break;
-    case "pub-description":
-      if (event.args.length == 0) {
-        event.reply("> Usage: pub-description <package>", prefix: false);
-      } else {
-        pubDescription(event.args[0]).then((desc) {
-          if (desc == null) {
-            event.reply("> No Such Package: ${event.args[0]}", prefix: false);
-          } else {
-            event.reply("> Description: ${desc}", prefix: false);
-          }
-        });
-      }
-      break;
-    case "pub-downloads":
-      if (event.args.length == 0) {
-        event.reply("> Usage: pub-downloads <package>", prefix: false);
-      } else {
-        String package = event.args[0];
-        pubPackage(package).then((info) {
-          if (info == null) {
-            event.reply("> No Such Package: ${event.args[0]}", prefix: false);
-          } else {
-            event.reply("> Download Count: ${info["downloads"]}", prefix: false);
-          }
-        });
-      }
-      break;
-    case "pub-uploaders":
-      if (event.args.length == 0) {
-        event.reply("> Usage: pub-uploaders <package>", prefix: false);
-      } else {
-        String package = event.args[0];
-        pubUploaders(package).then((authors) {
-          if (authors == null) {
-            event.reply("> No Such Package: ${event.args[0]}", prefix: false);
-          } else {
-            event.reply("> Uploaders: ${authors.join(", ")}", prefix: false);
-          }
-        });
-      }
-      break;
     case "addtxtcmd":
       event.require("txtcmds.add", () {
         if (event.args.length < 2) {
@@ -419,9 +350,6 @@ void handleCommand(CustomCommandEvent event) {
       event.replyNotice("I am written in 100% Dart. I use isolates to separate functionality into plugins. This allows me to reload plugins without restarting the full bot.");
       event.replyNotice("You can find most of my functionality here: https://github.com/PolymorphicBot/");
       break;
-    case "whatis":
-      APIDocs.handleWhatIsCmd(event);
-      break;
     case "neo":
       Neo.handleCommand(event);
       break;
@@ -460,71 +388,4 @@ void handleCommand(CustomCommandEvent event) {
   }
 
   handleServicesCommand(event);
-}
-
-Future<String> dartdocUrl(String package, [String version = "latest"]) {
-  if (version == "latest") {
-    return latestPubVersion(package).then((version) {
-      if (version == null) {
-        return new Future.value(null);
-      }
-      return new Future.value("${BASE_DARTDOC}${package}/${version}");
-    });
-  } else {
-    return new Future.value("${BASE_DARTDOC}${package}/${version}");
-  }
-}
-
-Future<Map<String, Object>> pubPackage(String package) {
-  return httpClient.get("https://pub.dartlang.org/api/packages/${package}").then((http.Response response) {
-    if (response.statusCode == 404) {
-      return new Future.value(null);
-    } else {
-      return new Future.value(JSON.decoder.convert(response.body));
-    }
-  });
-}
-
-Future<String> pubDescription(String package) {
-  return pubPackage(package).then((val) {
-    if (val == null) {
-      return new Future.value(null);
-    } else {
-      return new Future.value(val["latest"]["pubspec"]["description"]);
-    }
-  });
-}
-
-Future<List<String>> pubUploaders(String package) {
-  return pubPackage(package).then((val) {
-    if (val == null) {
-      return new Future.value(null);
-    } else {
-      return new Future.value(val["uploaders"]);
-    }
-  });
-}
-
-Future<List<String>> pubVersions(String package) {
-  return pubPackage(package).then((val) {
-    if (val == null) {
-      return new Future.value(null);
-    } else {
-      var versions = [];
-      val["versions"].forEach((version) {
-        versions.add(version["name"]);
-      });
-      return new Future.value(versions);
-    }
-  });
-}
-
-Future<String> latestPubVersion(String package) {
-  return pubPackage(package).then((val) {
-    if (val == null) {
-      return new Future.value(null);
-    } else {
-      return new Future.value(val["latest"]["pubspec"]["version"]);
-    }
-  });
 }

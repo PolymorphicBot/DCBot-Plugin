@@ -2,7 +2,7 @@ name: DCBot
 version: 1.0.0
 description: DirectCode Plugin for PolymorphicBot
 dependencies:
-  github: any
+  github: '>=2.0.0 <3.0.0'
   http: '>=0.11.0'
   irc: '>=2.0.0 <3.0.0'
   neo:
@@ -25,3 +25,7 @@ plugin:
     stop:
       usage: ''
       description: Stops the Bot
+dependency_overrides:
+  console:
+    git: https://github.com/DirectMyFile/console.dart.git
+  http: ">=0.11.1+1 <0.12.0"
