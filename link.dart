@@ -5,16 +5,18 @@ DSLink link;
 void setupLink() {
   link = new DSLink("DCBot", host: "rnd.iot-dsa.org");
   
-  bot.getNetworks().then((networks) {
-    for (var net in networks) {
-      var networkNode = link["/${net}"];
-      networkNode.createAction("SendMessage", params: {
-        "target": ValueType.STRING,
-        "message": ValueType.STRING
-      }, execute: (args) {
-        bot.message(net, args['target'].toString(), args['message'].toString());
-      });
-    }
+  new Future.delayed(new Duration(seconds: 10), () {
+    bot.getNetworks().then((networks) {
+      for (var net in networks) {
+        var networkNode = link.createRootNode(net);
+        networkNode.createAction("SendMessage", params: {
+          "target": ValueType.STRING,
+          "message": ValueType.STRING
+        }, execute: (args) {
+          bot.message(net, args['target'].toString(), args['message'].toString());
+        });
+      }
+    });
   });
   
   link.connect().then((_) {
