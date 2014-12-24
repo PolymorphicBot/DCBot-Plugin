@@ -19,6 +19,8 @@ import "package:http/http.dart" as http;
 
 import "markov.dart";
 
+import "package:dslink/link.dart";
+
 part "storage.dart";
 part "commands.dart";
 part "text_commands.dart";
@@ -26,6 +28,7 @@ part "messages.dart";
 part "gitlab.dart";
 part "neo.dart";
 part "services.dart";
+part "link.dart";
 
 BotConnector bot;
 
@@ -142,4 +145,6 @@ void main(List<String> args, port) {
       markov.save();
     }
   });
+  
+  setupLink();
 }

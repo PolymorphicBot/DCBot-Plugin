@@ -9,6 +9,8 @@ dependencies:
     git: http://git.directcode.org/neo/tools.git
   polymorphic_bot:
     git: git://github.com/PolymorphicBot/PolymorphicBot.git
+  dslink:
+    git: https://github.com/IOT-DSA/sdk-dslink-dart.git
 plugin:
   commands:
     help:
