@@ -59,7 +59,7 @@ void setupLink() {
     print("DSLink Connected.");
   });
   
-  eventManager.onShutdown(() {
+  bot.onShutdown(() {
     link.disconnect().then((_) {
       print("DSLink Disconnected.");
     });

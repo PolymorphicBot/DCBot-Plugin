@@ -43,12 +43,10 @@ String fancyPrefix(String name) {
   return "[${Color.BLUE}${name}${Color.RESET}]";
 }
 
-EventManager eventManager;
-
-void main(List<String> args, port) {
+void main(List<String> args, Plugin plugin) {
   startTime = new DateTime.now();
   markov = new MarkovChain();
-  bot = new BotConnector(port);
+  bot = plugin.getBot();
 
   storage = bot.createStorage("DCBot", "storage");
 
@@ -58,9 +56,8 @@ void main(List<String> args, port) {
 
   print("[DCBot] Loading Plugin");
 
-  eventManager = bot.createEventManager();
   {
-    var sub = eventManager.on("message").listen((event) {
+    var sub = bot.on("message").listen((event) {
       if (eventBus != null) {
         eventBus.emit("irc.message", {
           "network": event['network'],
@@ -90,10 +87,10 @@ void main(List<String> args, port) {
       handleMessage(event);
     });
 
-    eventManager.registerSubscription(sub);
+    bot.registerSubscription(sub);
   }
 
-  var sub = eventManager.on("command").listen((event) {
+  var sub = bot.on("command").listen((event) {
     var data = event;
     var network = data['network'] as String;
     var user = data['from'] as String;
@@ -117,9 +114,9 @@ void main(List<String> args, port) {
     handleTextCommands(cmdEvent);
   });
 
-  eventManager.registerSubscription(sub);
+  bot.registerSubscription(sub);
 
-  eventManager.onShutdown(() {
+  bot.onShutdown(() {
     print("[DCBot] Unloading Plugin");
     httpClient.close();
     textCommandStorage.destroy();

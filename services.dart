@@ -162,11 +162,11 @@ void setupServices() {
       });
     });
     
-    eventManager.on("join").listen((event) {
+    bot.on("join").listen((event) {
       eventBus.emit("irc.user.join", event);
     });
     
-    eventManager.on("part").listen((event) {
+    bot.on("part").listen((event) {
       eventBus.emit("irc.user.part", event);
     });
   });
