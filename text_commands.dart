@@ -3,7 +3,7 @@ part of dcbot.plugin;
 Storage textCommandStorage;
 
 void initTextCommands() {
-  textCommandStorage = bot.createStorage("DCBot", "text_commands");
+  textCommandStorage = plugin.getStorage("text_commands", group: "DCBot");
   textCommandStorage.load();
 }
 

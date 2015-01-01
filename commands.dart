@@ -167,16 +167,16 @@ void handleCommand(CustomCommandEvent event) {
       event.replyNotice("For a list of commands, use \$commands", prefixContent: "Help");
       break;
     case "commands":
-      bot.get("plugins").then((responseA) {
+      plugin.get("plugins").then((responseA) {
         List<String> pluginNames = responseA['plugins'];
-        for (var plugin in pluginNames) {
-          bot.get("plugin-commands", {
-            "plugin": plugin
+        for (var pluginName in pluginNames) {
+          plugin.get("plugin-commands", {
+            "plugin": pluginName
           }).then((Map<String, Map<String, dynamic>> cmds) {
             if (cmds == null) {
               return;
             }
-            event.replyNotice("${plugin}: ${cmds.isEmpty ? "No Commands" : cmds.keys.join(', ')}", prefixContent: "Commands");
+            event.replyNotice("${pluginName}: ${cmds.isEmpty ? "No Commands" : cmds.keys.join(', ')}", prefixContent: "Commands");
           });
         }
       });
@@ -186,12 +186,12 @@ void handleCommand(CustomCommandEvent event) {
         event.reply("Usage: command <command name>", prefixContent: "Command Information");
       }
 
-      bot.get("command-exists", {
+      plugin.get("command-exists", {
         "command": event.args[0]
       }).then((response) {
         var exists = response['exists'];
         if (exists) {
-          return bot.get("command-info", {
+          return plugin.get("command-info", {
             "command": event.args[0]
           });
         } else {
@@ -211,7 +211,7 @@ void handleCommand(CustomCommandEvent event) {
       });
       break;
     case "plugins":
-      bot.get("plugins").then((response) {
+      plugin.get("plugins").then((response) {
         event.reply("${response['plugins'].join(', ')}", prefixContent: "Plugins");
       });
       break;

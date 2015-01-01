@@ -148,7 +148,7 @@ void setupServices() {
     eventBus.on("irc.send.raw").listen((event) {
       var network = event['network'];
       var line = event['line'];
-      bot.send("raw", {
+      plugin.send("raw", {
         "network": network,
         "line": line
       });
@@ -162,11 +162,11 @@ void setupServices() {
       });
     });
     
-    bot.on("join").listen((event) {
+    plugin.on("join").listen((event) {
       eventBus.emit("irc.user.join", event);
     });
     
-    bot.on("part").listen((event) {
+    plugin.on("part").listen((event) {
       eventBus.emit("irc.user.part", event);
     });
   });

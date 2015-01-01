@@ -19,7 +19,7 @@ void setupLink() {
         networkNode.createAction("Join", params: {
           "channel": ValueType.STRING
         }, execute: (args) {
-          bot.send("join", {
+          plugin.send("join", {
             "channel": args["channel"].toString()
           });
         });
@@ -27,12 +27,12 @@ void setupLink() {
         networkNode.createAction("Part", params: {
           "channel": ValueType.STRING
         }, execute: (args) {
-          bot.send("join", {
+          plugin.send("join", {
             "channel": args["channel"].toString()
           });
         });
         
-        bot.get("whois", {
+        plugin.get("whois", {
           "network": net,
           "user": "DirectCodeBot"
         }).then((data) {
@@ -45,7 +45,8 @@ void setupLink() {
             });
             
             channelNode.createAction("Part", execute: (args) {
-              bot.send("part", {
+              plugin.send("part", {
+                "network": net,
                 "channel": channel
               });
             });
@@ -59,7 +60,7 @@ void setupLink() {
     print("DSLink Connected.");
   });
   
-  bot.onShutdown(() {
+  plugin.onShutdown(() {
     link.disconnect().then((_) {
       print("DSLink Disconnected.");
     });

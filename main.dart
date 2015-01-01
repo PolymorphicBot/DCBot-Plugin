@@ -36,6 +36,7 @@ Storage storage;
 MarkovChain markov;
 DateTime startTime;
 Timer markovTimer;
+Plugin plugin;
 
 http.Client httpClient = new http.Client();
 
@@ -43,12 +44,13 @@ String fancyPrefix(String name) {
   return "[${Color.BLUE}${name}${Color.RESET}]";
 }
 
-void main(List<String> args, Plugin plugin) {
+void main(List<String> args, Plugin myPlugin) {
+  plugin = myPlugin;
   startTime = new DateTime.now();
   markov = new MarkovChain();
   bot = plugin.getBot();
 
-  storage = bot.createStorage("DCBot", "storage");
+  storage = plugin.getStorage("storage", group: "DCBot");
 
   storage.load();
 
@@ -57,13 +59,13 @@ void main(List<String> args, Plugin plugin) {
   print("[DCBot] Loading Plugin");
 
   {
-    var sub = bot.on("message").listen((event) {
+    bot.onMessage((event) {
       if (eventBus != null) {
         eventBus.emit("irc.message", {
-          "network": event['network'],
-          "channel": event['target'],
-          "user": event['from'],
-          "message": event['message']
+          "network": event.network,
+          "channel": event.target,
+          "user": event.from,
+          "message": event.message
         });
       }
 
@@ -71,26 +73,24 @@ void main(List<String> args, Plugin plugin) {
       totalCount++;
       storage.set("messages_total", totalCount);
 
-      var netTotalCount = storage.get("${event['network']}_messages_total", 0);
+      var netTotalCount = storage.get("${event.network}_messages_total", 0);
       netTotalCount++;
-      storage.set("${event['network']}_messages_total", netTotalCount);
+      storage.set("${event.network}_messages_total", netTotalCount);
 
-      if (event['target'].startsWith("#")) {
-        var chanTotal = storage.get("${event['network']}_${event['target']}_messages_total", 0);
+      if (event.target.startsWith("#")) {
+        var chanTotal = storage.get("${event.network}_${event.target}_messages_total", 0);
         chanTotal++;
-        storage.set("${event['network']}_${event['target']}_messages_total", chanTotal);
+        storage.set("${event.network}_${event.target}_messages_total", chanTotal);
 
-        var chanUserTotal = storage.get("${event['network']}_${event['target']}_user_${event['from']}_messages_total", 0);
+        var chanUserTotal = storage.get("${event.network}_${event.target}_user_${event.from}_messages_total", 0);
         chanUserTotal++;
-        storage.set("${event['network']}_${event['target']}_user_${event['from']}_messages_total", chanUserTotal);
+        storage.set("${event.network}_${event.target}_user_${event.from}_messages_total", chanUserTotal);
       }
       handleMessage(event);
     });
-
-    bot.registerSubscription(sub);
   }
-
-  var sub = bot.on("command").listen((event) {
+  
+  var sub = plugin.on("command").listen((event) {
     var data = event;
     var network = data['network'] as String;
     var user = data['from'] as String;
@@ -114,9 +114,9 @@ void main(List<String> args, Plugin plugin) {
     handleTextCommands(cmdEvent);
   });
 
-  bot.registerSubscription(sub);
+  plugin.registerSubscription(sub);
 
-  bot.onShutdown(() {
+  plugin.onShutdown(() {
     print("[DCBot] Unloading Plugin");
     httpClient.close();
     textCommandStorage.destroy();
@@ -142,6 +142,6 @@ void main(List<String> args, Plugin plugin) {
       markov.save();
     }
   });
-  
+
   setupLink();
 }
