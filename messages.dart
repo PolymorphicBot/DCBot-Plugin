@@ -4,11 +4,11 @@ Math.Random random = new Math.Random();
 
 bool markovEnabled = false;
 
-void handleMessage(data) {
-  String network = data['network'];
-  String channel = data['target'];
-  String user = data['from'];
-  String message = data['message'];
+void handleMessage(MessageEvent event) {
+  String network = event.network;
+  String channel = event.target;
+  String user = event.from;
+  String message = event.message;
   
   String lower = message.toLowerCase();
   
