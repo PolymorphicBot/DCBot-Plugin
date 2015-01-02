@@ -54,7 +54,7 @@ void handleCommand(CustomCommandEvent event) {
         if (r["moniker"] == name.toLowerCase()) {
           var rtn = "$name ${r['version']} released on ${r["released"]["isodate"]}";
           if (r["iseol"] == true) rtn += " EOL";
-          event.reply(Color.GREEN + rtn, prefixContent: "Linux");
+          event.reply(Color.DARK_GREEN + rtn, prefixContent: "Linux");
         }
       });
     });
