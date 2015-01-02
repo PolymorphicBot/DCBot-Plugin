@@ -371,12 +371,10 @@ void handleCommand(CustomCommandEvent event) {
       Neo.handleCommand(event);
       break;
     case "linux-stable":
-      new HttpClient().getUrl(Uri.parse('https://www.kernel.org/releases.json')).then((req) => req.close()).then((response) {
-        response.transform(UTF8.decoder).join().then((value) {
-          var json = JSON.decode(value);
-          var latestStable = json['latest_stable'];
-          event.reply("Latest Stable: ${latestStable["version"]}", prefixContent: "Linux");
-        });
+      httpClient.get('https://www.kernel.org/releases.json').then((response) {
+        var json = JSON.decode(response.body);
+        var latestStable = json['latest_stable'];
+        event.reply("Latest Stable: ${latestStable['version']}", prefixContent: "Linux");
       });
       break;
   }
