@@ -104,6 +104,23 @@ void handleCommand(CustomCommandEvent event) {
         event.reply("U can't touch ${event.args.join(' ')}.", prefix: false);
       }
       break;
+    case "list-methods":
+      if (event.args.isEmpty) {
+        bot.getPlugins().then((plugins) {
+          for (var pn in plugins) {
+            plugin.getRemoteMethods(pn).then((methods) {
+              var names = methods.map((it) => it.name).toList();
+              if (names.isEmpty) {
+                return;
+              }
+              event.replyNotice("> ${pn}: ${names.join(", ")}", prefix: false);
+            });
+          }
+        });
+      } else {
+        event.reply("> Usage: list-methods", prefix: false);
+      }
+      break;
     case "hammer":
       event.reply(repeat("\u25AC", 4) + "\u258B", prefix: false);
       break;
