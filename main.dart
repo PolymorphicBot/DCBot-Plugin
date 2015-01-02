@@ -17,8 +17,6 @@ import "package:github/dates.dart";
 
 import "package:http/http.dart" as http;
 
-import "markov.dart";
-
 import "package:dslink/link.dart";
 
 part "storage.dart";
@@ -33,9 +31,7 @@ part "link.dart";
 BotConnector bot;
 
 Storage storage;
-MarkovChain markov;
 DateTime startTime;
-Timer markovTimer;
 Plugin plugin;
 
 http.Client httpClient = new http.Client();
@@ -47,7 +43,6 @@ String fancyPrefix(String name) {
 void main(List<String> args, Plugin myPlugin) {
   plugin = myPlugin;
   startTime = new DateTime.now();
-  markov = new MarkovChain();
   bot = plugin.getBot();
 
   storage = plugin.getStorage("storage", group: "DCBot");
@@ -121,27 +116,14 @@ void main(List<String> args, Plugin myPlugin) {
     httpClient.close();
     textCommandStorage.destroy();
     storage.destroy();
-    markovTimer.cancel();
-    if (markovEnabled) {
-      markov.save();
-    }
 
     for (var timer in countdowns) {
       timer.cancel();
     }
-
-    /* Release Memory */
-    markov = null;
   });
 
   servicesToken = storage.get("services_token");
   setupServices();
-
-  markovTimer = new Timer.periodic(new Duration(seconds: 600), (timer) {
-    if (markovEnabled) {
-      markov.save();
-    }
-  });
 
   setupLink();
 }

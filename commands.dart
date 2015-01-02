@@ -370,29 +370,6 @@ void handleCommand(CustomCommandEvent event) {
     case "neo":
       Neo.handleCommand(event);
       break;
-    case "toggle-markov":
-      event.require("markov.toggle", () {
-        markovEnabled = !markovEnabled;
-        if (markovEnabled) {
-          event.reply("Enabled", prefixContent: "Markov Chain");
-        } else {
-          event.reply("Disabled", prefixContent: "Markov Chain");
-        }
-      });
-      break;
-    case "markov-random":
-      try {
-        event.reply(markov.randomSentence(), prefix: false);
-      } catch (e) {
-        event.reply("Sorry, this command is still broken: ${e}", prefix: false);
-      }
-      break;
-    case "markov-stats":
-      event.reply(markov.generateStatistics(), prefix: false);
-      break;
-    case "markov-wordstats":
-      event.reply(markov.generateWordStats(event.args), prefix: false);
-      break;
     case "linux-stable":
       new HttpClient().getUrl(Uri.parse('https://www.kernel.org/releases.json')).then((req) => req.close()).then((response) {
         response.transform(UTF8.decoder).join().then((value) {

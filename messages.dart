@@ -2,8 +2,6 @@ part of dcbot.plugin;
 
 Math.Random random = new Math.Random();
 
-bool markovEnabled = false;
-
 void handleMessage(MessageEvent event) {
   String network = event.network;
   String channel = event.target;
@@ -57,14 +55,6 @@ void handleMessage(MessageEvent event) {
       if ((lower.contains("kaendfinger")) && (chance == 5)) {
         bot.message(network, channel, "did you mean kaendfork?");
       }
-    }
-
-    if (markovEnabled && lower.contains("directcodebot")) {
-      bot.message(network, channel, markov.reply(message, "DirectCodeBot", user));
-    }
-
-    if (markovEnabled) {
-      markov.addLine(message);
     }
   });
 }
