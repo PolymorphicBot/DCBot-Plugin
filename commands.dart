@@ -24,6 +24,7 @@ class CustomCommandEvent {
     bot.notice(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
+
   CustomCommandEvent(this.network, this.command, this.message, this.user, this.channel, this.args);
 }
 
@@ -44,6 +45,20 @@ void handleCommand(CustomCommandEvent event) {
         break;
     }
   }
+
+  void linuxRelease(String name) {
+    httpClient.get("https://www.kernel.org/releases.json").then((response) {
+      var json = JSON.decode(response.body);
+      var releases = json["releases"];
+      releases.forEach((r) {
+        if (r["moniker"] == name.toLowerCase()) {
+          var rtn = "$name ${r['version']} released on ${r["released"]["isodate"]}";
+          if (r["iseol"] == true) rtn += " EOL";
+          event.reply(Color.GREEN + rtn, prefixContent: "Linux");
+        }
+      });
+    });
+}
 
   switch (event.command) {
     case "broken":
@@ -371,11 +386,16 @@ void handleCommand(CustomCommandEvent event) {
       Neo.handleCommand(event);
       break;
     case "linux-stable":
-      httpClient.get('https://www.kernel.org/releases.json').then((response) {
-        var json = JSON.decode(response.body);
-        var latestStable = json['latest_stable'];
-        event.reply("Latest Stable: ${latestStable['version']}", prefixContent: "Linux");
-      });
+      linuxRelease("Stable");
+      break;
+    case "linux-mainline":
+      linuxRelease("Mainline");
+      break;
+    case "linux-next":
+      linuxRelease("Linux-Next");
+      break;
+    case "linux-longterm":
+      linuxRelease("Longterm");
       break;
   }
 
