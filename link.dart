@@ -13,7 +13,7 @@ void setupLink() {
           "target": ValueType.STRING,
           "message": ValueType.STRING
         }, execute: (args) {
-          bot.message(net, args['target'].toString(), args['message'].toString());
+          bot.sendMessage(net, args['target'].toString(), args['message'].toString());
         });
         
         networkNode.createAction("Join", params: {
@@ -41,7 +41,7 @@ void setupLink() {
             channelNode.createAction("SendMessage", params: {
               "message": ValueType.STRING
             }, execute: (args) {
-              bot.message(net, channel, args["message"].toString());
+              bot.sendMessage(net, channel, args["message"].toString());
             });
             
             channelNode.createAction("Part", execute: (args) {

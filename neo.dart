@@ -70,7 +70,7 @@ class Neo {
       var split = subscriber.split(":");
       var network = split[0];
       var user = split[1];
-      bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Started for the ${displayName}.");
+      bot.sendMessage(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Started for the ${displayName}.");
     }
   }
 
@@ -83,7 +83,7 @@ class Neo {
       var split = subscriber.split(":");
       var network = split[0];
       var user = split[1];
-      bot.message(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Finished with a status of ${build['buildStatus']} for the ${displayName}.");
+      bot.sendMessage(network, user, "${Color.BLUE}[${Color.RESET}neo${Color.BLUE}]${Color.RESET} Build Finished with a status of ${build['buildStatus']} for the ${displayName}.");
     }
   }
 

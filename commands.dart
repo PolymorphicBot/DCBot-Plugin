@@ -13,7 +13,7 @@ class CustomCommandEvent {
   final List<String> args;
 
   void reply(String message, {bool prefix: true, String prefixContent: "DCBot"}) {
-    bot.message(network, channel, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
+    bot.sendMessage(network, channel, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
   void require(String permission, void handle()) {
@@ -21,7 +21,7 @@ class CustomCommandEvent {
   }
 
   void replyNotice(String message, {bool prefix: true, String prefixContent: "DCBot"}) {
-    bot.notice(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
+    bot.sendMessage(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
   CustomCommandEvent(this.network, this.command, this.message, this.user, this.channel, this.args);

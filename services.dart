@@ -21,14 +21,14 @@ class ServiceEventBus {
 
   void _init() {
     onMessage("connect").listen((event) {
-      bot.message("EsperNet", "kaendfinger", "Event Bus Connecting");
+      bot.sendMessage("EsperNet", "kaendfinger", "Event Bus Connecting");
       sendMessage("connect", {
         "token": token
       });
     });
     
     onMessage("ready").listen((event) {
-      bot.message("EsperNet", "kaendfinger", "Event Bus Ready");
+      bot.sendMessage("EsperNet", "kaendfinger", "Event Bus Ready");
       while (_queue.isNotEmpty) {
         _socket.add(_queue.removeAt(0));
       }
@@ -131,18 +131,18 @@ void setupServices() {
     ]);
 
     eventBus.on("members.added").listen((event) {
-      bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is now a member");
+      bot.sendMessage("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is now a member");
     });
 
     eventBus.on("members.removed").listen((event) {
-      bot.message("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is no longer a member");
+      bot.sendMessage("EsperNet", "#directcode", "${fancyPrefix("DirectCode")} ${event['name']} is no longer a member");
     });
     
     eventBus.on("irc.send.message").listen((event) {
       var network = event['network'];
       var target = event['target'];
       var msg = event['message'];
-      bot.message(network, target, msg);
+      bot.sendMessage(network, target, msg);
     });
     
     eventBus.on("irc.send.raw").listen((event) {
