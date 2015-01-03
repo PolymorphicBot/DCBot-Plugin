@@ -48,13 +48,5 @@ void handleMessage(MessageEvent event) {
         bot.sendMessage(network, channel, "${message.replaceAll("ed", "forked").replaceAll("ing", "forking")}");
       }
     }
-
-    {
-      var chance = random.nextInt(40);
-
-      if ((lower.contains("kaendfinger")) && (chance == 5)) {
-        bot.sendMessage(network, channel, "did you mean kaendfork?");
-      }
-    }
   });
 }
