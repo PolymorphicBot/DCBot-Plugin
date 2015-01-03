@@ -46,7 +46,6 @@ class ServiceEventBus {
       socket.listen((data) {
         var json = JSON.decode(data);
         _controller.add(json);
-        print(json);
       });
       
       socket.done.then((_) {

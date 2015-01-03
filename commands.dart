@@ -21,7 +21,7 @@ class CustomCommandEvent {
   }
 
   void replyNotice(String message, {bool prefix: true, String prefixContent: "DCBot"}) {
-    bot.sendMessage(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
+    bot.sendNotice(network, user, (prefix ? "[${Color.BLUE}${prefixContent}${Color.RESET}] " : "") + message);
   }
 
 
