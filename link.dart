@@ -32,7 +32,7 @@ void setupLink() {
           });
         });
         
-        plugin.get("whois", {
+        plugin.callMethod("whois", {
           "network": net,
           "user": "DirectCodeBot"
         }).then((data) {

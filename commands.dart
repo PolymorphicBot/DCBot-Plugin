@@ -199,16 +199,13 @@ void handleCommand(CustomCommandEvent event) {
       event.replyNotice("For a list of commands, use \$commands", prefixContent: "Help");
       break;
     case "commands":
-      plugin.get("plugins").then((responseA) {
-        List<String> pluginNames = responseA['plugins'];
-        for (var pluginName in pluginNames) {
-          plugin.get("plugin-commands", {
-            "plugin": pluginName
-          }).then((Map<String, Map<String, dynamic>> cmds) {
-            if (cmds == null) {
+      plugin.getPlugins().then((plugins) {
+        for (var pluginName in plugins) {
+          bot.getCommands(pluginName).then((commands) {
+            if (commands == null) {
               return;
             }
-            event.replyNotice("${pluginName}: ${cmds.isEmpty ? "No Commands" : cmds.keys.join(', ')}", prefixContent: "Commands");
+            event.replyNotice("${pluginName}: ${commands.isEmpty ? "No Commands" : commands.map((it) => it.name).join(', ')}", prefixContent: "Commands");
           });
         }
       });
@@ -231,21 +228,21 @@ void handleCommand(CustomCommandEvent event) {
       if (event.args.length != 1) {
         event.reply("Usage: command <command name>", prefixContent: "Command Information");
       }
-
-      plugin.get("command-exists", {
-        "command": event.args[0]
-      }).then((response) {
-        var exists = response['exists'];
+      
+      bot.doesCommandExist(event.args[0]).then((exists) {
         if (exists) {
-          return plugin.get("command-info", {
-            "command": event.args[0]
-          });
+          return bot.getCommand(event.args[0]);
         } else {
           event.reply("Unknown Command: ${event.args[0]}", prefixContent: "Command Information");
+          return null;
         }
-      }).then((info) {
-        var usage = info["usage"];
-        var description = info["description"];
+      }).then((CommandInfo info) {
+        if (info == null) {
+          return;
+        }
+        
+        var usage = info.usage;
+        var description = info.description;
 
         if (description != null) {
           event.reply("Description: ${description}", prefixContent: "Command Information");
@@ -257,8 +254,8 @@ void handleCommand(CustomCommandEvent event) {
       });
       break;
     case "plugins":
-      plugin.get("plugins").then((response) {
-        event.reply("${response['plugins'].join(', ')}", prefixContent: "Plugins");
+      plugin.getPlugins().then((plugins) {
+        event.reply("${plugins.join(', ')}", prefixContent: "Plugins");
       });
       break;
     case "stats":
