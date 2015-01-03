@@ -213,6 +213,20 @@ void handleCommand(CustomCommandEvent event) {
         }
       });
       break;
+      
+    case "is-bot":
+      if (event.args.length != 1) {
+        event.reply("> Usage: is-bot <user>", prefix: false);
+      } else {
+        bot.isUserABot(event.network, event.args[0]).then((isBot) {
+          if (isBot) {
+            event.reply("> ${event.args[0]} is a bot.", prefix: false);
+          } else {
+            event.reply("> ${event.args[0]} is not a bot", prefix: false);
+          }
+        });
+      }
+      break;
     case "command":
       if (event.args.length != 1) {
         event.reply("Usage: command <command name>", prefixContent: "Command Information");
