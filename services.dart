@@ -147,10 +147,7 @@ void setupServices() {
     eventBus.on("irc.send.raw").listen((event) {
       var network = event['network'];
       var line = event['line'];
-      plugin.send("raw", {
-        "network": network,
-        "line": line
-      });
+      bot.sendRawLine(network, line);
     });
     
     eventBus.on("irc.get.networks").listen((event) {

@@ -19,17 +19,13 @@ void setupLink() {
         networkNode.createAction("Join", params: {
           "channel": ValueType.STRING
         }, execute: (args) {
-          plugin.send("join", {
-            "channel": args["channel"].toString()
-          });
+          bot.joinChannel(net, args["channel"].toString());
         });
         
         networkNode.createAction("Part", params: {
           "channel": ValueType.STRING
         }, execute: (args) {
-          plugin.send("join", {
-            "channel": args["channel"].toString()
-          });
+          bot.partChannel(net, args["channel"].toString());
         });
         
         plugin.callMethod("whois", {
@@ -45,10 +41,7 @@ void setupLink() {
             });
             
             channelNode.createAction("Part", execute: (args) {
-              plugin.send("part", {
-                "network": net,
-                "channel": channel
-              });
+              bot.partChannel(net, channel);
             });
           }
         });
