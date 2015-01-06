@@ -5,7 +5,7 @@ DSLink link;
 void setupLink() {
   link = new DSLink("DCBot", host: "rnd.iot-dsa.org");
   
-  new Future.delayed(new Duration(seconds: 10), () {
+  new Future.delayed(new Duration(seconds: 15), () {
     bot.getNetworks().then((networks) {
       for (var net in networks) {
         var networkNode = link.createRootNode(net);
