@@ -10,7 +10,9 @@ dependencies:
   polymorphic_bot:
     git: git://github.com/PolymorphicBot/PolymorphicBot.git
   dslink:
-    git: https://github.com/IOT-DSA/sdk-dslink-dart.git
+    git:
+      url: https://github.com/IOT-DSA/sdk-dslink-dart.git
+      ref: 3c30e98f73d85d073bf343d58ffc5ff198aba8b0
 plugin:
   commands:
     help:
