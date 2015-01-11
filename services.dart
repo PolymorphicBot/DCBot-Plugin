@@ -124,7 +124,7 @@ void setupServices() {
       "members.added",
       "members.removed",
       "github.hook",
-      "gitlab.hook",
+      "neo.gitlab.hook",
       "neo.teamcity.hook",
       "irc.send.message",
       "irc.send.raw",
