@@ -27,6 +27,15 @@ class Neo {
         break;
     }
   }
+  
+  static Future<Map<String, dynamic>> getIssue(int id) {
+    return http.get("http://git.directcode.org/api/v3/projects/34/issues/${id}?private_token=DdZEzSYb-3up_weLguVC").then((response) {
+      if (response.statusCode != 200) {
+        throw new Exception("ERROR");
+      }
+      return JSON.decode(response.body);
+    });
+  }
 
   static Future<Map<String, dynamic>> fetchDescriptor() {
     return http.get("http://git.directcode.org/neo/neo/raw/master/default.json").then((response) {
@@ -229,6 +238,34 @@ class Neo {
           }
 
           event.reply("Project Found.", prefixContent: "neo");
+        });
+        break;
+      case "issue":
+        if (args.length != 1) {
+          event.reply("Usage: neo issue <id>", prefixContent: "neo");
+        }
+        
+        int id;
+        
+        try {
+          id = int.parse(args[0]);
+        } catch (e) {
+          event.reply("Invalid Issue ID.", prefixContent: "neo");
+          return;
+        }
+        
+        getIssue(id).then((json) {
+          event.reply("Title: ${json["title"]}", prefixContent: "neo");
+          event.reply("Created By: ${json["author"]["username"]}", prefixContent: "neo");
+          event.reply("Labels: ${json["labels"].join(", ")}", prefixContent: "neo");
+          var state = json["state"];
+          state = state[0].toUpperCase() + state.substring(1);
+          event.reply("State: ${state}", prefixContent: "neo");
+          if (json["assignee"] != null) {
+            event.reply("Assignee: ${json["assignee"]["username"]}", prefixContent: "neo");
+          }
+        }).catchError((e) {
+          event.reply("Issue Not Found", prefixContent: "neo");
         });
         break;
       case "project":
