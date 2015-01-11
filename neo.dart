@@ -29,11 +29,12 @@ class Neo {
   }
   
   static Future<Map<String, dynamic>> getIssue(int id) {
-    return http.get("http://git.directcode.org/api/v3/projects/34/issues/${id}?private_token=DdZEzSYb-3up_weLguVC").then((response) {
-      if (response.statusCode != 200) {
+    return http.get("http://git.directcode.org/api/v3/projects/34/issues/${id}?private_token=DdZEzSYb-3up_weLguVC").then((r) {
+      return JSON.decode(r.body);
+    }).then((l) {
+      return l.firstWhere((it) => it["iid"] == id, orElse: () {
         throw new Exception("ERROR");
-      }
-      return JSON.decode(response.body);
+      });
     });
   }
 
