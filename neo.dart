@@ -9,6 +9,7 @@ class NeoDevice {
 class Neo {
   static void setup() {
     eventBus.on("neo.teamcity.hook").listen((data) {
+      print(data);
       handleTeamCityHook(data);
     });
   }
