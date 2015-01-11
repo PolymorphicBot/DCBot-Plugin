@@ -21,17 +21,16 @@ class ServiceEventBus {
 
   void _init() {
     onMessage("connect").listen((event) {
-      bot.sendMessage("EsperNet", "kaendfinger", "Event Bus Connecting");
       sendMessage("connect", {
         "token": token
       });
     });
     
     onMessage("ready").listen((event) {
-      bot.sendMessage("EsperNet", "kaendfinger", "Event Bus Ready");
       while (_queue.isNotEmpty) {
         _socket.add(_queue.removeAt(0));
       }
+      
       if (_connectCompleter != null) {
         _connectCompleter.complete();
       }
