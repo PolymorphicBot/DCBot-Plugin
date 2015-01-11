@@ -37,6 +37,12 @@ class Neo {
       });
     });
   }
+  
+  static Future<List<Map<String, dynamic>>> getIssues() {
+    return http.get("http://git.directcode.org/api/v3/projects/34/issues?private_token=DdZEzSYb-3up_weLguVC&per_page=50000").then((r) {
+      return JSON.decode(r.body);
+    });
+  }
 
   static Future<Map<String, dynamic>> fetchDescriptor() {
     return http.get("http://git.directcode.org/neo/neo/raw/master/default.json").then((response) {
@@ -256,17 +262,36 @@ class Neo {
         }
         
         getIssue(id).then((json) {
-          event.reply("Title: ${json["title"]}", prefixContent: "neo");
-          event.reply("Created By: ${json["author"]["username"]}", prefixContent: "neo");
-          event.reply("Labels: ${json["labels"].join(", ")}", prefixContent: "neo");
+          event.replyNotice("Title: ${json["title"]}", prefixContent: "neo");
+          event.replyNotice("Created By: ${json["author"]["username"]}", prefixContent: "neo");
+          event.replyNotice("Labels: ${json["labels"].join(", ")}", prefixContent: "neo");
           var state = json["state"];
           state = state[0].toUpperCase() + state.substring(1);
-          event.reply("State: ${state}", prefixContent: "neo");
+          event.replyNotice("State: ${state}", prefixContent: "neo");
           if (json["assignee"] != null) {
-            event.reply("Assignee: ${json["assignee"]["username"]}", prefixContent: "neo");
+            event.replyNotice("Assignee: ${json["assignee"]["username"]}", prefixContent: "neo");
           }
         }).catchError((e) {
           event.reply("Issue Not Found", prefixContent: "neo");
+        });
+        break;
+      case "issue-count":
+        getIssues().then((issues) {
+          var opened = issues.where((it) => it["state"] == "opened").length;
+          var closed = issues.where((it) => it["state"] == "closed").length;
+          event.reply("Total: ${issues.length}, Open: ${opened}, Closed: ${closed}", prefixContent: "neo");
+        });
+        break;
+      case "my-issues":
+        getIssues().then((issues) {
+          var assigned = issues.where((it) => it["assignee"] != null && it["assignee"]["username"] == event.user).toList();
+          for (var issue in assigned) {
+            event.replyNotice("'${issue["title"]}' (${issue["iid"]}) by ${issue["author"]["username"]}", prefixContent: "neo");
+          }
+          
+          if (assigned.isEmpty) {
+            event.replyNotice("No Issues were found that are assigned to you.", prefixContent: "neo");
+          }
         });
         break;
       case "project":
