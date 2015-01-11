@@ -27,7 +27,7 @@ class Neo {
         break;
     }
   }
-  
+
   static Future<Map<String, dynamic>> getIssue(int id) {
     return http.get("http://git.directcode.org/api/v3/projects/34/issues?private_token=DdZEzSYb-3up_weLguVC").then((r) {
       return JSON.decode(r.body);
@@ -37,7 +37,7 @@ class Neo {
       });
     });
   }
-  
+
   static Future<List<Map<String, dynamic>>> getIssues() {
     return http.get("http://git.directcode.org/api/v3/projects/34/issues?private_token=DdZEzSYb-3up_weLguVC&per_page=50000").then((r) {
       return JSON.decode(r.body);
@@ -122,6 +122,7 @@ class Neo {
       return;
     }
     var cmd = _args.removeAt(0);
+    var cmds = ["subscribe", "unsubscribe", "subscriptions", "devices", "device", "projects", "project-exists", "project", "project-count", "my-issues", "issue", "issue-count"]..sort();
     var args = _args;
 
     switch (cmd) {
@@ -180,9 +181,7 @@ class Neo {
         }
         var subs = storage.json.keys.where((key) {
           return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains(event.network + ":" + event.user);
-        }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " "))
-        .map((key) => key.split(" ").map((it) => it[0].toUpperCase() + it.substring(1)).join(" "))
-        .toList();
+        }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " ")).map((key) => key.split(" ").map((it) => it[0].toUpperCase() + it.substring(1)).join(" ")).toList();
         if (subs.isEmpty) {
           event.reply("You are not subscribed to any devices.", prefixContent: "neo");
         } else {
@@ -251,16 +250,16 @@ class Neo {
         if (args.length != 1) {
           event.reply("Usage: neo issue <id>", prefixContent: "neo");
         }
-        
+
         int id;
-        
+
         try {
           id = int.parse(args[0]);
         } catch (e) {
           event.reply("Invalid Issue ID.", prefixContent: "neo");
           return;
         }
-        
+
         getIssue(id).then((json) {
           event.replyNotice("Title: ${json["title"]}", prefixContent: "neo");
           event.replyNotice("Created By: ${json["author"]["username"]}", prefixContent: "neo");
@@ -288,7 +287,7 @@ class Neo {
           for (var issue in assigned) {
             event.replyNotice("'${issue["title"]}' (${issue["iid"]}) by ${issue["author"]["username"]}", prefixContent: "neo");
           }
-          
+
           if (assigned.isEmpty) {
             event.replyNotice("No Issues were found that are assigned to you.", prefixContent: "neo");
           }
@@ -324,6 +323,9 @@ class Neo {
           }
           event.reply("Optional: ${optional}", prefixContent: "neo");
         });
+        break;
+      case "help":
+        event.reply("Commands: ${cmds.join(", ")}", prefixContent: "neo");
         break;
       default:
         event.reply("No Such Command '${cmd}'", prefixContent: "neo");
