@@ -44,7 +44,6 @@ class ServiceEventBus {
 
       socket.listen((data) {
         var json = JSON.decode(data);
-        print(json);
         _controller.add(json);
       });
       
@@ -116,6 +115,9 @@ void setupServices() {
   eventBus = new ServiceEventBus("ws://${servicesUrl}/events/ws", servicesToken);
   
   eventBus.connect().then((_) {
+    Neo.setup();
+    GitLab.initialize();
+    
     print("Connected to Event Bus");
   
     eventBus.subscribe([

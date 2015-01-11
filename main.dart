@@ -110,7 +110,7 @@ void main(List<String> args, Plugin myPlugin) {
   });
 
   plugin.registerSubscription(sub);
-
+  
   plugin.onShutdown(() {
     print("[DCBot] Unloading Plugin");
     httpClient.close();
@@ -124,6 +124,5 @@ void main(List<String> args, Plugin myPlugin) {
 
   servicesToken = storage.get("services_token");
   setupServices();
-
   setupLink();
 }
