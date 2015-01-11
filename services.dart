@@ -116,7 +116,7 @@ void setupServices() {
   
   eventBus.connect().then((_) {
     Neo.setup();
-    GitLab.initialize();
+    NeoGitLab.initialize();
     
     print("Connected to Event Bus");
   

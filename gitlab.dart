@@ -1,11 +1,15 @@
 part of dcbot.plugin;
 
-class GitLab {
+class NeoGitLab {
   static void initialize() {
-    eventBus.on("gitlab.hook").listen(handleHookEvent);
+    eventBus.on("neo.gitlab.hook").listen(handleHookEvent);
   }
 
   static void handleHookEvent(Map<String, dynamic> input) {
+    if (input["commits"] == null) {
+      return;
+    }
+    
     var ref = input['ref'];
 
     if (ref.startsWith("refs/heads/")) {
@@ -13,18 +17,22 @@ class GitLab {
     }
 
     var user = input['user_name'];
-    var repositoryName = input['repository']['name'];
-
-    var channel = "#directcode";
-
-    var commits = input['commits'];
     
-    bot.sendMessage("EsperNet", channel, "[${repositoryName}] ${user} pushed to branch ${ref}:");
-    bot.sendMessage("DCNET", channel, "[${repositoryName}] ${user} pushed to branch ${ref}:");
+    if (user == "DirectCodeBot" || user == "Room Service" || user == "DirectCode Bot") {
+      return;
+    }
+    
+    var repositoryName = input['repository']['name'].replaceAll("_", "/");
+    var channel = "#directcode";
+    var count = input["total_commits_count"];
+    List<Map<String, dynamic>> commits = input['commits'].take(5).toList();
+    
+    if (count <= 0) return;
+    
+    bot.sendMessage("EsperNet", channel, "[${repositoryName}] ${user} pushed ${count} ${count == 1 ? "commit" : "commits"} to branch ${ref}:");
 
     for (var commit in commits) {
       bot.sendMessage("EsperNet", channel, "${commit['author']['name']}: ${commit['message']}");
-      bot.sendMessage("DCNET", channel, "${commit['author']['name']}: ${commit['message']}");
     }
   }
 }

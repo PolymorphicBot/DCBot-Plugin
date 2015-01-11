@@ -16,6 +16,8 @@ class Neo {
   static void handleTeamCityHook(Map<String, dynamic> json) {
     Map<String, dynamic> build = json['build'];
 
+    if (build == null || build['notifyType'] == null) return;
+    
     switch (build['notifyType']) {
       case "buildStarted":
         onBuildStarted(build);
