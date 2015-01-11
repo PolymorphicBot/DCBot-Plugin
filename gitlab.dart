@@ -6,6 +6,7 @@ class NeoGitLab {
   }
 
   static void handleHookEvent(Map<String, dynamic> input) {
+    print("Got GitLab Hook Event: ${input}");
     if (input["commits"] == null) {
       return;
     }
