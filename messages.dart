@@ -44,7 +44,7 @@ void handleMessage(MessageEvent event) {
     {
       var chance = random.nextInt(5000);
 
-      if ((lower.contains("ed") || lower.contains("ing")) && (chance > 2000) && (chance < 2500)) {
+      if ((lower.contains("ed") || lower.contains("ing")) && (chance > 2000) && (chance < 2050)) {
         bot.sendMessage(network, channel, "${message.replaceAll("ed", "forked").replaceAll("ing", "forking")}");
       }
     }
