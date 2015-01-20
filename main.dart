@@ -64,22 +64,12 @@ void main(List<String> args, Plugin myPlugin) {
         });
       }
 
-      var totalCount = storage.get("messages_total", 0);
-      totalCount++;
-      storage.set("messages_total", totalCount);
-
-      var netTotalCount = storage.get("${event.network}_messages_total", 0);
-      netTotalCount++;
-      storage.set("${event.network}_messages_total", netTotalCount);
+      storage.incrementInteger("messages_total");
+      storage.incrementInteger("${event.network}_messages_total");
 
       if (event.target.startsWith("#")) {
-        var chanTotal = storage.get("${event.network}_${event.target}_messages_total", 0);
-        chanTotal++;
-        storage.set("${event.network}_${event.target}_messages_total", chanTotal);
-
-        var chanUserTotal = storage.get("${event.network}_${event.target}_user_${event.from}_messages_total", 0);
-        chanUserTotal++;
-        storage.set("${event.network}_${event.target}_user_${event.from}_messages_total", chanUserTotal);
+        storage.incrementInteger("${event.network}_${event.target}_messages_total");
+        storage.incrementInteger("${event.network}_${event.target}_user_${event.from}_messages_total");
       }
       handleMessage(event);
     });
@@ -94,16 +84,11 @@ void main(List<String> args, Plugin myPlugin) {
     var args = data['args'] as List<String>;
     var message = data['message'] as String;
     var cmdEvent = new CustomCommandEvent(network, command, message, user, target, args);
+    
     {
-      var networkCommandsTotal = storage.get("${network}_commands_total", 0);
-      var channelCommandsTotal = storage.get("${network}_${target}_commands_total", 0);
-      var commandsTotal = storage.get("commands_total", 0);
-      networkCommandsTotal++;
-      channelCommandsTotal++;
-      commandsTotal++;
-      storage.set("${network}_commands_total", networkCommandsTotal);
-      storage.set("${network}_${target}_commands_total", channelCommandsTotal);
-      storage.set("commands_total", commandsTotal);
+      storage.incrementInteger("${network}_commands_total");
+      storage.incrementInteger("${network}_${target}_commands_total");
+      storage.incrementInteger("commands_total");
     }
     handleCommand(cmdEvent);
     handleTextCommands(cmdEvent);
@@ -122,7 +107,7 @@ void main(List<String> args, Plugin myPlugin) {
     }
   });
 
-  servicesToken = storage.get("services_token");
+  servicesToken = storage.getString("services_token");
   setupServices();
   setupLink();
 }

@@ -259,12 +259,12 @@ void handleCommand(CustomCommandEvent event) {
       });
       break;
     case "stats":
-      var msgsTotal = storage.get("messages_total", 0);
-      var cmdsTotal = storage.get("commands_total", 0);
-      var networkMsgsTotal = storage.get("${event.network}_messages_total", 0);
-      var networkCmdsTotal = storage.get("${event.network}_commands_total", 0);
-      var channelMsgsTotal = storage.get("${event.network}_${event.channel}_messages_total", 0);
-      var channelCmdsTotal = storage.get("${event.network}_${event.channel}_commands_total", 0);
+      var msgsTotal = storage.getInteger("messages_total", defaultValue: 0);
+      var cmdsTotal = storage.getInteger("commands_total", defaultValue: 0);
+      var networkMsgsTotal = storage.getInteger("${event.network}_messages_total", defaultValue: 0);
+      var networkCmdsTotal = storage.getInteger("${event.network}_commands_total", defaultValue: 0);
+      var channelMsgsTotal = storage.getInteger("${event.network}_${event.channel}_messages_total", defaultValue: 0);
+      var channelCmdsTotal = storage.getInteger("${event.network}_${event.channel}_commands_total", defaultValue: 0);
 
       event.replyNotice("Bot - Total Messages: ${msgsTotal}", prefixContent: "Statistics");
       event.replyNotice("Users - Total Command Runs: ${cmdsTotal}", prefixContent: "Statistics");
@@ -275,10 +275,10 @@ void handleCommand(CustomCommandEvent event) {
 
       {
         var users = [];
-        storage.map.keys.where((it) => it.startsWith("${event.network}_${event.channel}_user_")).forEach((name) {
+        storage.keys.where((it) => it.startsWith("${event.network}_${event.channel}_user_")).forEach((name) {
           users.add({
             "name": name.replaceAll("${event.network}_${event.channel}_user_", "").replaceAll("_messages_total", ""),
-            "count": storage.get(name)
+            "count": storage.getInteger(name, defaultValue: 0)
           });
         });
 
@@ -327,7 +327,7 @@ void handleCommand(CustomCommandEvent event) {
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
-          textCommandStorage.set(cmd, text);
+          textCommandStorage.setString(cmd, text);
           event.reply("Command Added", prefixContent: "Text Commands");
         }
       });
@@ -338,7 +338,7 @@ void handleCommand(CustomCommandEvent event) {
           event.reply("Usage: removetxtcmd <command>", prefixContent: "Text Commands");
         } else {
           var cmd = event.args[0];
-          textCommandStorage.json.remove(cmd);
+          textCommandStorage.remove(cmd);
           event.reply("Command Removed", prefixContent: "Text Commands");
         }
       });
@@ -350,7 +350,7 @@ void handleCommand(CustomCommandEvent event) {
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
-          textCommandStorage.set(event.network + " " + event.channel + " " + cmd, text);
+          textCommandStorage.setString(event.network + " " + event.channel + " " + cmd, text);
           event.reply("Command Added", prefixContent: "Text Commands");
         }
       });
@@ -361,7 +361,7 @@ void handleCommand(CustomCommandEvent event) {
           event.reply("Usage: removechannelcmd <command>", prefixContent: "Text Commands");
         } else {
           var cmd = event.args[0];
-          textCommandStorage.json.remove(event.network + " " + event.channel + " " + cmd);
+          textCommandStorage.remove(event.network + " " + event.channel + " " + cmd);
           event.reply("Command Removed", prefixContent: "Text Commands");
         }
       });
@@ -373,7 +373,7 @@ void handleCommand(CustomCommandEvent event) {
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
-          textCommandStorage.set(event.channel + " " + cmd, text);
+          textCommandStorage.setString(event.channel + " " + cmd, text);
           event.reply("Command Added", prefixContent: "Text Commands");
         }
       });
@@ -384,7 +384,7 @@ void handleCommand(CustomCommandEvent event) {
           event.reply("Usage: removegchannelcmd <command>", prefixContent: "Text Commands");
         } else {
           var cmd = event.args[0];
-          textCommandStorage.json.remove(event.channel + " " + cmd);
+          textCommandStorage.remove(event.channel + " " + cmd);
           event.reply("Command Removed", prefixContent: "Text Commands");
         }
       });

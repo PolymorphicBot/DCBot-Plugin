@@ -10,13 +10,13 @@ void initTextCommands() {
 void handleTextCommands(CustomCommandEvent event) {
   String value;
   
-  value = textCommandStorage.get("${event.command}", null);
+  value = textCommandStorage.getString("${event.command}");
   
   if (value != null) {
     event.reply("> ${value}", prefix: false);
-  } else if ((value = textCommandStorage.get("${event.network} ${event.channel} ${event.command}", null)) != null) {
+  } else if ((value = textCommandStorage.getString("${event.network} ${event.channel} ${event.command}")) != null) {
     event.reply("> ${value}", prefix: false);
-  } else if ((value = textCommandStorage.get("${event.channel} ${event.command}", null)) != null) {
+  } else if ((value = textCommandStorage.getString("${event.channel} ${event.command}")) != null) {
     event.reply("> ${value}", prefix: false);
   }
 }

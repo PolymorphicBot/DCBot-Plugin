@@ -82,7 +82,7 @@ class Neo {
   static void onBuildStarted(Map<String, dynamic> build) {
     String displayName = build['buildFullName'].replaceAll("neo :: ", "");
     String device = displayName.replaceAll(" ", "_").toLowerCase();
-    List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
+    List<String> subscribers = storage.getList("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", defaultValue: []);
 
     for (var subscriber in subscribers) {
       var split = subscriber.split(":");
@@ -95,7 +95,7 @@ class Neo {
   static void onBuildFinished(Map<String, dynamic> build) {
     String displayName = build['buildFullName'].replaceAll("neo :: ", "");
     String device = displayName.replaceAll(" ", "_").toLowerCase();
-    List<String> subscribers = storage.get("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", []);
+    List<String> subscribers = storage.getList("neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}", defaultValue: []);
 
     for (var subscriber in subscribers) {
       var split = subscriber.split(":");
@@ -142,13 +142,13 @@ class Neo {
           }
 
           var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
-          List<String> subscribers = storage.get(key, []);
+          List<String> subscribers = storage.getList(key, defaultValue: []);
           if (subscribers.contains("${event.network}:${event.user}")) {
             event.reply("You are already subscribed to build notifications for the ${device}.", prefixContent: "neo");
             return;
           }
           subscribers.add("${event.network}:${event.user}");
-          storage.set(key, subscribers);
+          storage.setList(key, subscribers);
           event.reply("You have been subscribed to build notifications for the ${device}.", prefixContent: "neo");
         });
         break;
@@ -166,13 +166,13 @@ class Neo {
           }
 
           var key = "neo.device_subscribe.${device.replaceAll(" ", "_").toLowerCase()}";
-          List<String> subscribers = storage.get(key, []);
+          List<String> subscribers = storage.getList(key, defaultValue: []);
           if (!subscribers.contains("${event.network}:${event.user}")) {
             event.reply("You are not subscribed to build notifications for the ${device}.", prefixContent: "neo");
             return;
           }
           subscribers.remove("${event.network}:${event.user}");
-          storage.set(key, subscribers);
+          storage.setList(key, subscribers);
           event.reply("You are no longer subscribed to build notifications for the ${device}.", prefixContent: "neo");
         });
         break;
@@ -181,8 +181,8 @@ class Neo {
           event.reply("Usage: neo subscriptions", prefixContent: "neo");
           return;
         }
-        var subs = storage.json.keys.where((key) {
-          return key.startsWith("neo.device_subscribe.") && storage.get(key, []).contains(event.network + ":" + event.user);
+        var subs = storage.keys.where((key) {
+          return key.startsWith("neo.device_subscribe.") && storage.getList(key, defaultValue: []).contains(event.network + ":" + event.user);
         }).map((key) => key.replaceAll("neo.device_subscribe.", "").replaceAll("_", " ")).map((key) => key.split(" ").map((it) => it[0].toUpperCase() + it.substring(1)).join(" ")).toList();
         if (subs.isEmpty) {
           event.reply("You are not subscribed to any devices.", prefixContent: "neo");
