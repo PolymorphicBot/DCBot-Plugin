@@ -176,6 +176,7 @@ void handleCommand(CustomCommandEvent event) {
       }
       event.reply("${days} day${days != 1 ? "s" : ""} from now will be ${friendlyDate(new DateTime.now().add(new Duration(days: days)))}", prefixContent: "DCBot");
       break;
+    
     case "dag":
       if (event.args.length != 1) {
         event.reply("> Usage: dag <days>", prefix: false);
@@ -194,10 +195,12 @@ void handleCommand(CustomCommandEvent event) {
       }
       event.reply("${days} day${days != 1 ? "s" : ""} ago was ${friendlyDate(new DateTime.now().subtract(new Duration(days: days)))}", prefixContent: "DCBot");
       break;
+    
     case "help":
       event.replyNotice("DCBot is the official DirectCode IRC Bot.", prefixContent: "Help");
       event.replyNotice("For a list of commands, use \$commands", prefixContent: "Help");
       break;
+    
     case "commands":
       plugin.getPlugins().then((plugins) {
         for (var pluginName in plugins) {
@@ -224,6 +227,7 @@ void handleCommand(CustomCommandEvent event) {
         });
       }
       break;
+    
     case "command":
       if (event.args.length != 1) {
         event.reply("Usage: command <command name>", prefixContent: "Command Information");
@@ -258,6 +262,7 @@ void handleCommand(CustomCommandEvent event) {
         event.reply("${plugins.join(', ')}", prefixContent: "Plugins");
       });
       break;
+    
     case "stats":
       var msgsTotal = storage.getInteger("messages_total", defaultValue: 0);
       var cmdsTotal = storage.getInteger("commands_total", defaultValue: 0);
@@ -355,6 +360,17 @@ void handleCommand(CustomCommandEvent event) {
         }
       });
       break;
+    case "listtxtcmds":
+      event.require("txtcmds.list", () {
+        var globals = textCommandStorage.keys.where((it) {
+          return !it.contains(" ");
+        }).toList();
+        
+        paginate(globals, 8, (page, items) {
+          event.reply("> ${page == 1 ? "Commands: " : ""}${items.join(", ")}");
+        });
+      });
+      break;
     case "removechannelcmd":
       event.require("txtcmds.channel.remove", () {
         if (event.args.length != 1) {
@@ -411,4 +427,20 @@ void handleCommand(CustomCommandEvent event) {
   }
 
   handleServicesCommand(event);
+}
+
+void paginate(List<dynamic> allItems, int per, void handler(int page, List<dynamic> items)) {
+  var x = 0;
+  var buff = [];
+  var p = 1;
+  for (var i = 0; i < allItems.length; i++) {
+    x++;
+    buff.add(allItems[i]);
+    if (x == per || x == allItems.length) {
+      handler(p, new List<dynamic>.from(buff));
+      x = 0;
+      buff.clear();
+      p++;
+    }
+  }
 }
