@@ -367,7 +367,7 @@ void handleCommand(CustomCommandEvent event) {
         }).toList();
         
         paginate(globals, 8, (page, items) {
-          event.reply("> ${page == 1 ? "Commands: " : ""}${items.join(", ")}");
+          event.reply("${page == 1 ? "Commands: " : ""}${items.join(", ")}", prefixContent: "Text Commands");
         });
       });
       break;
