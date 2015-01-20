@@ -436,7 +436,7 @@ void paginate(List<dynamic> allItems, int per, void handler(int page, List<dynam
   for (var i = 0; i < allItems.length; i++) {
     x++;
     buff.add(allItems[i]);
-    if (x == per || x == allItems.length) {
+    if (x == per || i == allItems.length) {
       handler(p, new List<dynamic>.from(buff));
       x = 0;
       buff.clear();
