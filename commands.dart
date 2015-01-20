@@ -375,7 +375,7 @@ void handleCommand(CustomCommandEvent event) {
       event.require("txtcmds.channel.list", () {
         var ours = textCommandStorage.keys.where((it) {
           return it.startsWith("${event.network} ${event.channel} ");
-        }).toList();
+        }).map((it) => it.split(" ").last).toList();
         
         paginate(ours, 8, (page, items) {
           event.reply("${items.join(", ")}", prefixContent: "Channel Commands");
@@ -409,7 +409,7 @@ void handleCommand(CustomCommandEvent event) {
       event.require("txtcmds.channel.list", () {
         var ours = textCommandStorage.keys.where((it) {
           return it.startsWith("${event.channel} ");
-        }).toList();
+        }).map((it) => it.split(" ").last).toList();
         
         paginate(ours, 8, (page, items) {
           event.reply("${items.join(", ")}", prefixContent: "Global Channel Commands");
