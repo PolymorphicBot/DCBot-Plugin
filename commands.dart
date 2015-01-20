@@ -429,7 +429,7 @@ void handleCommand(CustomCommandEvent event) {
       break;
     case "about-bot":
       event.replyNotice("I am written in 100% Dart. I use isolates to separate functionality into plugins. This allows me to reload plugins without restarting the full bot.");
-      event.replyNotice("You can find most of my functionality here: https://github.com/PolymorphicBot/");
+      event.replyNotice("You can find all of my functionality here as plugins: https://github.com/PolymorphicBot/");
       break;
     case "neo":
       Neo.handleCommand(event);
