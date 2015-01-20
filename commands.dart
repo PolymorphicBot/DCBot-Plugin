@@ -351,12 +351,12 @@ void handleCommand(CustomCommandEvent event) {
     case "addchannelcmd":
       event.require("txtcmds.channel.add", () {
         if (event.args.length < 2) {
-          event.reply("Usage: addchannelcmd <command> <text>", prefixContent: "Text Commands");
+          event.reply("Usage: addchannelcmd <command> <text>", prefixContent: "Channel Commands");
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
           textCommandStorage.setString(event.network + " " + event.channel + " " + cmd, text);
-          event.reply("Command Added", prefixContent: "Text Commands");
+          event.reply("Command Added", prefixContent: "Channel Commands");
         }
       });
       break;
@@ -367,41 +367,63 @@ void handleCommand(CustomCommandEvent event) {
         }).toList();
         
         paginate(globals, 8, (page, items) {
-          event.reply("${page == 1 ? "Commands: " : ""}${items.join(", ")}", prefixContent: "Text Commands");
+          event.reply("${items.join(", ")}", prefixContent: "Text Commands");
+        });
+      });
+      break;
+    case "listchannelcmds":
+      event.require("txtcmds.channel.list", () {
+        var ours = textCommandStorage.keys.where((it) {
+          return it.startsWith("${event.network} ${event.channel} ");
+        }).toList();
+        
+        paginate(ours, 8, (page, items) {
+          event.reply("${items.join(", ")}", prefixContent: "Channel Commands");
         });
       });
       break;
     case "removechannelcmd":
       event.require("txtcmds.channel.remove", () {
         if (event.args.length != 1) {
-          event.reply("Usage: removechannelcmd <command>", prefixContent: "Text Commands");
+          event.reply("Usage: removechannelcmd <command>", prefixContent: "Channel Commands");
         } else {
           var cmd = event.args[0];
           textCommandStorage.remove(event.network + " " + event.channel + " " + cmd);
-          event.reply("Command Removed", prefixContent: "Text Commands");
+          event.reply("Command Removed", prefixContent: "Channel Commands");
         }
       });
       break;
     case "addgchannelcmd":
       event.require("txtcmds.channel.global.add", () {
         if (event.args.length < 2) {
-          event.reply("Usage: addgchannelcmd <command> <text>", prefixContent: "Text Commands");
+          event.reply("Usage: addgchannelcmd <command> <text>", prefixContent: "Global Channel Commands");
         } else {
           var cmd = event.args[0];
           var text = event.args.sublist(1).join(" ");
           textCommandStorage.setString(event.channel + " " + cmd, text);
-          event.reply("Command Added", prefixContent: "Text Commands");
+          event.reply("Command Added", prefixContent: "Global Channel Commands");
         }
+      });
+      break;
+    case "listgchannelcmds":
+      event.require("txtcmds.channel.list", () {
+        var ours = textCommandStorage.keys.where((it) {
+          return it.startsWith("${event.channel} ");
+        }).toList();
+        
+        paginate(ours, 8, (page, items) {
+          event.reply("${items.join(", ")}", prefixContent: "Global Channel Commands");
+        });
       });
       break;
     case "removegchannelcmd":
       event.require("txtcmds.channel.global.remove", () {
         if (event.args.length != 1) {
-          event.reply("Usage: removegchannelcmd <command>", prefixContent: "Text Commands");
+          event.reply("Usage: removegchannelcmd <command>", prefixContent: "Global Channel Commands");
         } else {
           var cmd = event.args[0];
           textCommandStorage.remove(event.channel + " " + cmd);
-          event.reply("Command Removed", prefixContent: "Text Commands");
+          event.reply("Command Removed", prefixContent: "Global Channel Commands");
         }
       });
       break;
