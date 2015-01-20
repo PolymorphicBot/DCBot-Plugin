@@ -40,8 +40,8 @@ String fancyPrefix(String name) {
   return "[${Color.BLUE}${name}${Color.RESET}]";
 }
 
-void main(List<String> args, Plugin myPlugin) {
-  plugin = myPlugin;
+main(args, port) {
+  plugin = polymorphic(args, port);
   startTime = new DateTime.now();
   bot = plugin.getBot();
 
