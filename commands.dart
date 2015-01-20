@@ -279,13 +279,27 @@ void handleCommand(CustomCommandEvent event) {
       event.replyNotice("Channel - Total Command Runs: ${channelCmdsTotal}", prefixContent: "Statistics");
 
       {
-        var users = [];
+        var users = <Map<String, dynamic>>[];
         storage.keys.where((it) => it.startsWith("${event.network}_${event.channel}_user_")).forEach((name) {
           users.add({
             "name": name.replaceAll("${event.network}_${event.channel}_user_", "").replaceAll("_messages_total", ""),
             "count": storage.getInteger(name, defaultValue: 0)
           });
         });
+        
+        void combine(String a, String b) {
+          var ai = users.firstWhere((it) => it['name'] == a, orElse: () => null);
+          var bi = users.firstWhere((it) => it['name'] == b, orElse: () => null);
+          
+          if (ai != null && bi != null) {
+            users.remove(bi);
+            ai['count'] += bi['count'];
+          }
+        }
+        
+        combine("kaendfinger", "kaendfork");
+        combine("samrg472", "deathcrazyuberlironman");
+        combine("samrg472", "samfork");
 
         users.sort((a, b) => b['count'].compareTo(a['count']));
 
