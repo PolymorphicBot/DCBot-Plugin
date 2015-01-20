@@ -294,8 +294,8 @@ void handleCommand(CustomCommandEvent event) {
           var actives = (users.take(6).toList()..removeAt(0)).map((it) => it['name']);
           var least = users.last['name'];
 
-          event.replyNotice("Most Talkative User on ${event.channel}: ${most}", prefixContent: "Statistics");
-          event.replyNotice("Most Active Users on ${event.channel}: ${actives.join(", ")}", prefixContent: "Statistics");
+          event.replyNotice("Most Active User on ${event.channel}: ${most}", prefixContent: "Statistics");
+          event.replyNotice("Active Users on ${event.channel}: ${actives.join(", ")}", prefixContent: "Statistics");
         }
       }
       break;
