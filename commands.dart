@@ -275,7 +275,7 @@ void handleCommand(CustomCommandEvent event) {
       event.replyNotice("Users - Total Command Runs: ${cmdsTotal}", prefixContent: "Statistics");
       event.replyNotice("Network - Total Messages: ${networkMsgsTotal}", prefixContent: "Statistics");
       event.replyNotice("Channel - Total Messages: ${channelMsgsTotal}", prefixContent: "Statistics");
-      event.replyNotice("Network - Total Command Runs: ${cmdsTotal}", prefixContent: "Statistics");
+      event.replyNotice("Network - Total Command Runs: ${networkCmdsTotal}", prefixContent: "Statistics");
       event.replyNotice("Channel - Total Command Runs: ${channelCmdsTotal}", prefixContent: "Statistics");
 
       {
