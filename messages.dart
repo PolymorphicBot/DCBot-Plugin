@@ -36,17 +36,5 @@ void handleMessage(MessageEvent event) {
       bot.sendMessage(network, channel, "${user}: Sorry for the bad experience. Will you file a bug report? https://github.com/PolymorphicBot/PolymorphicBot/issues/new");
       return;
     }
-
-    if (lower.contains(new RegExp(r"don\'?t make me get(?: out)? the whip"))) {
-      bot.sendMessage(network, channel, "I like whips.");
-    }
-
-    {
-      var chance = random.nextInt(5000);
-
-      if ((lower.contains("ed") || lower.contains("ing")) && (chance > 2000) && (chance < 2050)) {
-        bot.sendMessage(network, channel, "${message.replaceAll("ed", "forked").replaceAll("ing", "forking")}");
-      }
-    }
   });
 }
