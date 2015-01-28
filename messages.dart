@@ -13,10 +13,10 @@ void handleMessage(MessageEvent event) {
   String firstChar = message.substring(0, 1);
   
   bot.config.then((Map conf) {
-    if (conf["prefix"][network].containsKey(channel) &&
-        firstChar == conf["prefix"][network][channel]) {
+    if (conf["prefixes"][network].containsKey(channel) &&
+        firstChar == conf["prefixes"][network][channel]) {
       return;
-    } else if (firstChar == conf["prefix"][network]["default"]) {
+    } else if (firstChar == conf["prefixes"][network]["default"]) {
       return;
     }
 
